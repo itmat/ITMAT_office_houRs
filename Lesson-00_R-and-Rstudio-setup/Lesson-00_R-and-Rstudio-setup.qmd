@@ -1,0 +1,236 @@
+---
+title: "Lesson 0: R & Rstudio Setup"
+date: today
+format:
+    html:
+        number-sections: true
+editor: visual
+---
+
+# Prepare our computers to run R
+
+## Download & install R
+
+The first thing we need to do is install a program that will allow our computers
+to read and execute R code. This is what we mean by "installing R."
+
+For general information on the current state of R you can visit the [R Project
+homepage](https://www.r-project.org/). To download the latest version of R,
+navigate to [this page](https://cloud.r-project.org/), click the link(s)
+specific to your operating system, and follow the instructions.
+
+This will be a two step procedure for Windows and macOS users: first you'll
+download the R installer from the above link, then you'll run the installer on
+your computer. Windows users should select the 'base' version of R when given
+the choice between downloading 'base', 'contrib', and 'old contrib'. After
+you've downloaded the installer, double-click it to run. You should be fine
+selecting the default choice when given the option to customize your
+installation. The customization options won't affect how we interact with R,
+since we'll be doing our work through RStudio.
+
+For many Linux users, you'll download and install R in one step using the
+package management software specific to your Linux distribution. The R page
+contains more detailed instructions for several common Linux distributions.
+
+After you complete the installation process, you should now have the ability to
+launch R as a stand-alone application on your computer. Note, the R application
+is separate from the R installer program you downloaded above.
+
+
+## Download & install RStudio
+
+For these lessons, we'll be using the RStudio program to write our code and
+interact with R. While you only need to install R to write and run R code on
+your computer, RStudio has several nice features that will make working with R
+a much more pleasant experience.
+
+To download the latest version of the RStudio desktop app installer, go to [this page](https://posit.co/download/rstudio-desktop/)
+and select the option specific to your operating system. Run the installer after
+the download is complete. At this point, you should be able to launch the
+Rstudio app on your computer.
+
+
+# Run R from a web browser
+
+While it's often simplest to install and run R/RStudio as stand-alone programs
+on your own computer, this is not the only option. Here are two alternatives you
+can use to run these R lessons if you're not able to install R/RStudio on your
+computer.
+
+## Posit Cloud
+
+Posit, the company behind RStudio, provides a cloud-based infrastructure you can
+use to run RStudio through your web browser. This service is called 'Posit
+Cloud' and is accessible [here](https://posit.cloud/). You need to create an
+account to access Posit Cloud and select a subscription tier. While the paid
+tiers offer more powerful compute resources, more storage, and more compute time,
+the free tier should be enough to run the R code in these lessons.
+
+When you launch Posit Cloud through your web browser, you have access to a fully
+featured instance of the RStudio app that is running on the cloud. This means
+that you can access and run RStudio anywhere you can open a web browser. It also
+means you'll need to upload any data files you want to work on to the cloud
+servers, and download any results you want to store on your local computer.
+These upload/download procedures are pretty simple.
+
+Lastly, the RStudio workspaces on Posit Cloud are persistent. This means that if
+you make changes to the R environment (e.g. by installing an R package) or
+upload files to Posit Cloud on one computer, the service saves these changes so
+you'll have access to the same R environment and files when you login to Posit
+Cloud from another computer.
+
+
+## WebR
+
+WebAssembly is a recent effort to develop tools for running complex programs in
+a web browser. WebR is a version of R that's designed to use WebAssembly to run
+R code. You can find information on WebR on [this page](https://docs.r-wasm.org/webr/latest/).
+The authors of WebR have created a bare-bones WebR editor that mimics RStudio's
+layout and lets you write and run R code in your browser
+([https://webr.r-wasm.org/latest/](https://webr.r-wasm.org/latest/)).
+
+While this WebR editor may seem similar to Posit Cloud, in that you're accessing
+an R programming environment through your web browser, the big difference lies
+in where the R code is actually running. In Posit Cloud, all of the computations
+are happening on an RStudio server located somewhere else (probably an AWS
+warehouse). The Posit Cloud website acts as a portal that lets you communicate
+with this server, as if you're running RStudio on your computer. WebR actually
+is running on your computer, inside your web browser. This means all of the
+computations are happening on your local computer and not on a cloud server.
+
+This also means that the WebR environment is not persistent. With Posit Cloud,
+any changes you make to the R environment are saved to the cloud server, so you
+see these changes the next time you open Posit Cloud. Since the R environment
+for WebR is running inside your web browser, it ends when you close your web
+browser (or the tab that's running WebR). This means you'll need to re-install
+the R packages you want to use every time you load WebR.
+
+While WebR does provide an alternative to running RStudio on your computer or
+through Posit Cloud, it should be your last resort for running the R code in
+these lessons. WebR is relatively new and still under active development, which
+means things could break/change without much warning. Also, while the WebR
+editor visually resembles RStudio, it's really a demo of what WebR can do and
+lacks RStudio's helpful features. All that being said, it's still worth knowing
+about WebR. It's just plain cool and opens up a lot of possibilities for how we
+can share data analyses and visualizations with each other.
+
+
+# Install R packages
+
+R packages are collections of functions and code that expand what R can do. The
+variety of packages under continual development is one of the main advantages to
+working in R. Throughout these lessons we'll use different packages to help
+visualize, clean, and analyze our data.
+
+## Base R
+
+The functions and code included with every R installation are part of R’s base
+packages, also know as **base R**. The base packages include quite a bit of
+functionality on their own, providing us with functions for reading/writing
+files, mathematical calculations, graphing/plotting, as well as the framework
+upon which all other packages are built.
+
+While base R has its advantages, it can be a bit esoteric, particularly when
+you’re first starting out. We want to use packages to make our lives easier and
+our code more readable.
+
+The R Foundation maintains a central repository and archive of R packages, known
+as [CRAN](https://cran.r-project.org/) (Comprehensive R Archive Network). Below,
+we'll the `install.packages()` function to download and install some useful R
+packages from CRAN.
+
+
+## The tidyverse
+
+The [tidyverse](https://www.tidyverse.org/) is a family of packages that will
+make it easier for us to read data from files, plot graphs, and generally
+wrangle data into useful formats. The bulk of these lessons (at least the early
+ones) are built around using various tidyverse packages to work with data.
+
+Since the tidyverse is not included with **base R**, we need to install it
+before we can use it. Run the following code to download and install the
+tidyverse packages:
+
+```{r}
+install.packages("tidyverse")
+```
+
+Even though we’ve downloaded and installed the tidyverse packages, we still
+can’t use any of their functions. Whenever we start a new R/RStudio session, it
+only loads the base R packages. This means R always starts quickly, no matter
+how many packages we’ve installed. It also means we have complete control over
+which packages are loaded into memory at any given time. Generally, we only want
+to load packages we know we’re going to use in the current R session. This keeps
+R’s memory footprint as small as possible, leaving more room for our data.
+
+We load installed packages with the `library()` function. Note, when we load
+packages we don’t need to enclose the package names in quotation marks, like we
+did when running the `install.packages()` function.
+
+```{r}
+library(tidyverse)
+```
+
+
+
+## Palmer Penguins
+
+![Artwork by @allison_horst](https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/man/figures/lter_penguins.png){fig-alt="Chinstrap, gentoo, and adelie penguins from palmerpenguins package" fig-align="center" width="6in"}
+
+Now that we've installed some tools to help us visualize and wrangle some data,
+we need a dataset to work with. For these lessons, we'll start with the Palmer
+Penguins dataset.
+
+The Palmer Penguins dataset contains anatomical and physiological measurements
+collected from three penguin species living on several islands near the Palmer
+Research Station in Antarctica. These data were collected by Dr. Kristin B.
+Gorman and the Palmer Station Long Term Ecological Research (LTER) program. This
+work was originally published in:
+
+- Gorman KB, Williams TD, Fraser WR (2014). Ecological sexual dimorphism and
+  environmental variability within a community of Antarctic penguins (genus
+  Pygoscelis). *PLoS ONE* 9(3):e90081.
+
+Dr. Allison Horst, Dr. Alison Hill, and Dr. Kristen Gorman wrapped these data
+into the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html)
+R package. 
+
+![Artwork by @allison_horst](https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/man/figures/logo.png){fig-alt="palmerpenguins package logo" fig-align="center" width="2in"}
+
+Here, we'll use the `install.packages()` function to install the `"palmerpenguins"`
+package. Construct this command and run it:
+
+```{r}
+
+```
+
+Now that we've downloaded and installed the `palmerpenguins` package, use the
+`library()` function to load it.
+
+```{r}
+
+```
+
+
+Now that we've installed R, RStudio, and the tidyverse and palmerpenguins R
+packages, our computers are ready for the introductory R lessons.
+
+
+# R session information
+
+For reproducibility, it is important for us to list the version of R and the
+package versions we used to perform an analysis. The base R `sessionInfo()`
+function prints the state of the R session including:
+
+-   R version
+-   Operating system
+-   A list of loaded packages and their associated version numbers
+-   Some additional configuration settings for the R environment (e.g. 'locale')
+
+It's good practice to print the state of the session at the end of all analyses.
+That way anyone examining our work can see the exact conditions we used to
+arrive at these results.
+
+```{r}
+sessionInfo()
+```
