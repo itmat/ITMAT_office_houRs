@@ -6,3 +6,10 @@
 .httr-oauth
 .DS_Store
 .quarto
+
+# Ignore all files in the LESSON directory, except for the
+# quarto documents. This will ignore reports rendered from
+# these documents, as well as any additional files produced
+# by the rendering.
+LESSONS/*
+!LESSONS/*.qmd
