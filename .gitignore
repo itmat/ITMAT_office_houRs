@@ -13,3 +13,7 @@
 # by the rendering.
 LESSONS/*
 !LESSONS/*.qmd
+# Also include quarto docs for lessons in LESSON subdirectories
+!LESSONS/*/
+LESSONS/*/*
+!LESSONS/*/*.qmd

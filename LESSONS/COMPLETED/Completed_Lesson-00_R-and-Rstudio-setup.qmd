@@ -200,14 +200,14 @@ Here, we'll use the `install.packages()` function to install the
 
 ```{r}
 #| eval: false
-
+install.packages("palmerpenguins")
 ```
 
 Now that we've downloaded and installed the `palmerpenguins` package, use the
 `library()` function to load it.
 
 ```{r}
-
+library(palmerpenguins)
 ```
 
 Now that we've installed R, RStudio, and the tidyverse and palmerpenguins R

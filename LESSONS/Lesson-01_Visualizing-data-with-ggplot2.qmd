@@ -1,0 +1,63 @@
+---
+title: "Lesson 1: Visualizing data with *ggplot2*"
+date: today
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+editor: visual
+---
+
+# Prepare the R envinronment for this lesson
+
+When we start R, we only have access to the **base R** packages. In order to use
+any additional packages, we need to load them into memory with the `library()`
+function.
+
+For this lesson we'll need two packages: *ggplot2* and *palmerpenguins*. Run the
+following code chunk to load these two libraries. Note, the second library
+command is empty. Modify the command so it loads the palmerpenguins package.
+
+```{r}
+library(ggplot2)
+library(palmerpenguins)
+```
+
+It's good practice to start R code, stored in R scripts or quarto/Rmarkdown
+documents, by loading the packages we'll be using in the body of the code. It
+gives readers, including future versions of ourselves, a consistent place to
+examine all of the packages required to run our code.
+
+
+
+
+```{r}
+#| label: Completed flipper length vs body mass graph
+#| fig-width: 7
+#| fig-height: 5
+ggplot(data = penguins,
+       mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
+    geom_point(aes(color = species, shape = species)) +
+    geom_smooth(method = "lm") +
+    labs(title = "Relationship between flipper length and body mass",
+         subtitle = "Across three species of penguins studied at the Palmer Research Station",
+         x = "Body mass (g)",
+         y = "Flipper length (mm)") +
+    # scale_color_viridis_d() +
+    # scale_color_brewer(palette = "Dark2") +
+    theme_minimal()
+```
+
+
+
+
+# R session information
+
+For reproducibility, we report version numbers for R and the packages we used in
+our analyses above.
+
+```{r}
+sessionInfo()
+```
