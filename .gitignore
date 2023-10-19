@@ -17,3 +17,5 @@ LESSONS/*
 !LESSONS/*/
 LESSONS/*/*
 !LESSONS/*/*.qmd
+
+/.quarto/

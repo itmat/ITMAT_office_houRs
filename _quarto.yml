@@ -1,0 +1,21 @@
+project:
+  type: website
+  render:
+    - index.qmd
+    - website_quarto_docs/*
+  output-dir: website_html_docs
+
+website:
+  title: "ITMAT office houRs"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: website_quarto_docs/lessons.qmd
+        text: Lessons
+
+format:
+  html:
+    theme: sandstone
+    css: styles.css
+    toc: true
