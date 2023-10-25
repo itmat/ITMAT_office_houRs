@@ -1,5 +1,9 @@
 ---
-title: "Untitled"
+title: "Overview"
 ---
 
-Testing some website rendering
+This is the companion website for the ITMAT office houRs. It's under active
+development (as are my web programming skills) and will change a lot, so thank
+you in advance for your patience.
+
+

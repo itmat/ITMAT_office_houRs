@@ -2,4 +2,22 @@
 title: "Lessons"
 ---
 
-This will link to pages for individual lessons
+<!-- The quart document for this page is located in the website_quart_docs
+     directory. The documents I'm trying to link are in the LESSONS directory.
+     Unfortunately, quarto paths in a qmd file are always relative to the
+     location of that qmd file. This is why I need to prefix "../" to the
+     paths here. Otherwise, quarto will try to search for a LESSONS directory
+     within the website_quart_docs directory. -->
+
+* Lesson 0: R and RStudio setup
+    + [View original lesson](../LESSONS/Lesson-00_R-and-Rstudio-setup.qmd)
+    + [View completed lesson](../LESSONS/COMPLETED/Completed_Lesson-00_R-and-Rstudio-setup.qmd)
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-00_R-and-Rstudio-setup.qmd)
+
+* Lesson 1: Visualizing data with *ggplot2*
+    + [View original lesson](../LESSONS/Lesson-01_Visualizing-data-with-ggplot2.qmd)
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-01_Visualizing-data-with-ggplot2.qmd)
+        - [Graph image](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/IMAGES/Lesson-01_Flipper-length-v-body-mass_Scatterplot-w-trend.png) (save to images subdirectory)
+

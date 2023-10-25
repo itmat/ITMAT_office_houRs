@@ -3,14 +3,17 @@ project:
   render:
     - index.qmd
     - website_quarto_docs/*
+    - LESSONS/*.qmd
+    - LESSONS/COMPLETED/*.qmd
   output-dir: website_html_docs
 
 website:
   title: "ITMAT office houRs"
+  back-to-top-navigation: true
   navbar:
     left:
       - href: index.qmd
-        text: Home
+        text: Overview
       - href: website_quarto_docs/lessons.qmd
         text: Lessons
 
