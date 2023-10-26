@@ -1,0 +1,32 @@
+---
+title: "Lessons"
+---
+
+::: {.callout-note icon="false"}
+To download a file from the list below, right-click on the link and select the
+"Save Link As..." option (on Firefox). The specific text for this option might
+be a little different, depending on your web browser.
+:::
+
+<!-- The quart document for this page is located in the website_quart_docs
+     directory. The documents I'm trying to link are in the LESSONS directory.
+     Unfortunately, quarto paths in a qmd file are always relative to the
+     location of that qmd file. This is why I need to prefix "../" to the
+     paths here. Otherwise, quarto will try to search for a LESSONS directory
+     within the website_quart_docs directory. -->
+
+* Lesson 0: R and RStudio setup
+    + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-00_R-and-Rstudio-setup.qmd)
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-00_R-and-Rstudio-setup.qmd) (save to `LESSONS/` subdirectory)
+    
+
+* Lesson 1: Visualizing data with *ggplot2*
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-01_Visualizing-data-with-ggplot2.qmd) (save to `LESSONS/` subdirectory)
+        - [Graph image](IMAGES/Lesson-01_Flipper-length-v-body-mass_Scatterplot-w-trend.png) (save to `IMAGES/` subdirectory)
+
+* Lesson 2: Working with tabular data
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-02_Working-with-tabular-data.qmd) (save to `LESSONS/` subdirectory)
+        - [Data file](DATA/penguins.csv) (save to `DATA/` subdirectory)

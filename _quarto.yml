@@ -2,10 +2,9 @@ project:
   type: website
   render:
     - index.qmd
-    - website_quarto_docs/*
-    - LESSONS/*.qmd
+    - lessons.qmd
     - LESSONS/COMPLETED/*.qmd
-  output-dir: website_html_docs
+  output-dir: docs
 
 website:
   title: "ITMAT office houRs"
@@ -14,7 +13,7 @@ website:
     left:
       - href: index.qmd
         text: Overview
-      - href: website_quarto_docs/lessons.qmd
+      - href: lessons.qmd
         text: Lessons
 
 format:
