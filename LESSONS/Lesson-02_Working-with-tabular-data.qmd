@@ -33,10 +33,10 @@ all of these packages.
 
 ```{r}
 #| eval: true
-library(here)
-library(palmerpenguins)
-library(readr)
-library(dplyr)
+library()
+library()
+library()
+library()
 ```
 
 The output from this code indicates R successfully loaded these packages. The
