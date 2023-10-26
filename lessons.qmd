@@ -22,6 +22,7 @@ be a little different, depending on your web browser.
     
 
 * Lesson 1: Visualizing data with *ggplot2*
+    + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-01_Visualizing-data-with-ggplot2.qmd)
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-01_Visualizing-data-with-ggplot2.qmd) (save to `LESSONS/` subdirectory)
         - [Graph image](IMAGES/Lesson-01_Flipper-length-v-body-mass_Scatterplot-w-trend.png) (save to `IMAGES/` subdirectory)
