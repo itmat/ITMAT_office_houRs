@@ -27,6 +27,7 @@ be a little different, depending on your web browser.
         - [Graph image](IMAGES/Lesson-01_Flipper-length-v-body-mass_Scatterplot-w-trend.png) (save to `IMAGES/` subdirectory)
 
 * Lesson 2: Working with tabular data
+    + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-02_Working-with-tabular-data.qmd)
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-02_Working-with-tabular-data.qmd) (save to `LESSONS/` subdirectory)
         - [Data file](DATA/penguins.csv) (save to `DATA/` subdirectory)

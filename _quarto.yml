@@ -4,6 +4,7 @@ project:
     - index.qmd
     - lessons.qmd
     - LESSONS/COMPLETED/*.qmd
+    - NOTES/*.qmd
   output-dir: docs
 
 website:
