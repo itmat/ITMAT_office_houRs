@@ -36,3 +36,10 @@ be a little different, depending on your web browser.
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-03_Exploring-geom-functions-and-customizing-ggplots.qmd) (save to `LESSONS/` subdirectory)
 
+
+# Notes & Nibbles
+
+Detours that arise from discussions and questions that aren't long enough to
+warrant their own, full lessons.
+
+* [Using named and positional arguments with functions](NOTES/Programming-notes_Named-and-position-arguments.qmd)
