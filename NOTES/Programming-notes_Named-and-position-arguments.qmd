@@ -18,7 +18,8 @@ Consider the following code we use to create a scatterplot from the penguin
 data:
 
 ```{r}
-#| fig-width: 2
+#| fig-width: 3
+#| fig-asp: 1
 #| fig-align: center
 ggplot(data = penguins,
        mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
@@ -33,7 +34,8 @@ constructing this code, we explicitly write the names of arguments (e.g.
 Compare this to the following code, which generates the exact same scatterplot:
 
 ```{r}
-#| fig-width: 2
+#| fig-width: 3
+#| fig-asp: 1
 #| fig-align: center
 ggplot(penguins,
        aes(x = body_mass_g, y = flipper_length_mm)) +
