@@ -1,0 +1,403 @@
+---
+title: "Lesson 2: Working with tabular data"
+date: 2023-10-26
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+editor: visual
+---
+
+# Prepare the R environment for this lesson
+
+For this lesson we'll need four packages:
+
+-   *palmerpenguins*
+-   *here*
+-   *readr*
+-   *dplyr*
+
+First, we need to install the *here* package, using the `install.packages()`{.r} function.
+
+```{r}
+#| eval: false
+install.packages("here")
+```
+
+Note, the *readr* and *dplyr* packages are part of the *tidyverse*, so we don't need to install them separately. Now we use the `library()`{.r} function to load all of these packages.
+
+```{r}
+#| eval: true
+library(palmerpenguins)
+library(here)
+library(readr)
+library(dplyr)
+```
+
+The output from this code indicates R successfully loaded these packages. The message we get from the *here* package tells us which directory on our computers it's using as the "root" directory (more on what this means [below](#read-data-from-files)). The other warning messages explains that *dplyr* includes several functions (e.g. `filter()`{.r} and `lag()`{.r}) that have the same names as functions from the *stats* and *base* packages. R's default behavior for resolving these naming conflicts is to use the version of the function loaded most recently into memory. The warning lets us know that if we run any of these functions, R will use the version of these functions from the *dplyr* package and not the *stats*/*base* package.
+
+The potential for naming conflicts like this is another reason why we only load the packages we need for the current analyses.
+
+::: callout-tip
+## RStudio's Tab-Complete List Includes Package Names for Each Function
+
+When we start to type a function's name, and RStudio's tab-completion prompt opens up, the package for each function is listed in curly bracers to the right of the function's name. As we're writing code, we can use this make sure we're using the correct version of the function.
+:::
+
+# Reading data from files {#read-data-from-files}
+
+We have a file named `penguins.csv` in the `DATA/` directory. This data file is in `.csv` (comma-separated values) format and contains the same information as the `penguins` data frame we used in the previous lesson. We can view the raw contents of this file by using the *Files* tab in the lower right pane of the RStudio window. Navigate to the `DATA/` directory, click on the `penguins.csv` file, then select the "View File" option.
+
+## Base R
+
+We can read the data from this file using the base R function `read.csv()`{.r} and store the data in a **variable** named `penguin_data_from_base_r`.
+
+```{r}
+penguin_data_from_base_r <- read.csv(file = here::here("DATA/penguins.csv"))
+```
+
+In R, `<-`{.r} is called the **assignment operator**. The assignment operator takes the output from the function to its right (`read.csv()`{.r}) and *assigns* it to the variable to its right (`penguin_data_from_base_r`). Put differently, we're storing the contents of the 'penguins.csv' file in 'penguin_data_from_base_r'.
+
+::: {.callout-note icon="false"}
+### The *here* package
+
+The `here()`{.r} function is helping to point R to the specific location of the file. It allows us to define a file's location relative to the project's main directory (`ITMAT_office_houRs`, in this case). While the `here()`{.r} function is not required to read files, it can make our lives easier when we're using RStudio's 'Projects' to manage our work.
+:::
+
+We can look at the contents of `penguin_data_from_base_r` by entering the variable name into the R console.
+
+```{r paged.print=FALSE, R.options=list(max.print="150")}
+penguin_data_from_base_r
+```
+
+Notice, that "penguin_data_from_base_r" now appears in the *Environment* tab of the upper right pane of the RStudio window. We can use this tab to quickly check the data we've loaded into R.
+
+While the `read.csv()` function gets the job done, it doesn't do a lot to format the data.
+
+## The *readr* package
+
+![](https://raw.githubusercontent.com/tidyverse/readr/main/man/figures/logo.png){fig-alt="dplyr logo" fig-align="center" width="2in"}
+
+As the name implies, the *readr* package contains functions designed to help us read tabular data from text files. These functions a lot of useful features to mark and handle problems we're likely to encounter in real-world data (we'll see some examples of this in later lessons).
+
+To read this csv file, we're going to use the `read_csv()`{.r} function from the *readr* package. The command is almost identical to base R, except we have an underscore in `read_csv()`{.r}, instead of a period.
+
+```{r}
+penguin_data_from_readr <- read_csv(file = here::here("DATA/penguins.csv"))
+```
+
+The *readr* function includes some additional output that tells us about guesses it's making about data in the file. Specifically, it determined the species, island, and sex columns contain text (or "characters"), while the remaining columns contain numbers with decimal points (or "doubles").
+
+Compare the the contents of the `penguin_data_from_readr` to the `penguin_data_from_base_r` data we loaded above:
+
+```{r paged.print=FALSE}
+penguin_data_from_readr
+```
+
+*readr* functions read data from files and store them as **tibbles**, a special version of a data frame. We saw an example of a tibble when we worked with the `penguins` data frame, loaded by the *palmerpenguins* package.
+
+# Transforming penguins
+
+## The *dplyr* Package
+
+![](https://raw.githubusercontent.com/tidyverse/dplyr/main/man/figures/logo.png){fig-alt="dplyr logo" fig-align="center" width="2in"}
+
+The *dplyr* package comes with many functions for manipulating and extracting information from tabular data. As we'll see below, *dplyr* functions are named after verbs that describe what we're doing to the input data, and the first argument of every function is the input data frame (or tibble).
+
+For simplicity, we'll return to using the `penguins` data frame for the remainder of this lesson. While we could use *dplyr* functions to work with the data we read from `penguins.csv`, the `penguins` data frame has some nicer formatting.
+
+## Filter
+
+We can use the `filter()`{.r} function to grab rows from our data that contain specific information. Here, we extract just those rows containing measurements from Gentoo penguins.
+
+```{r}
+filter(penguins, species == "Gentoo")
+```
+
+Remember, the species information in our data frame is contained in the "species" column. This example code is telling R to search through every row in the penguin data, and return those rows that have "Gentoo" in the species column. From this example, we can see the general form for using the filter function: `filter(dataset, comparison)`. We used "==" to indicate we want to find all rows in species that match the word "Gentoo". This is an example of a **relational operator**.
+
+::: callout-note
+### Compare Values With Relational Operators
+
+R supports several operators that let us compare values:
+
+-   **==** : Check if two values are exactly equal. Many programming languages use the double equals sign to indicate comparisons, because they're already using the single equal sign for something else (e.g. assignment).
+-   **\<**, **\>** : Less-than, and greater-than comparisons.
+-   **\<=**, **\>=** : Less-than or equal, and greater-than or equal comparisons.
+-   **!=** : Check if two values are not equal.
+
+These operators return a **logical** value: `TRUE`{.r} or `FALSE`{.r}.
+
+```{r}
+"Gentoo" == "Gentoo"
+121 < 43
+```
+:::
+
+We can also combine multiple filtering conditions in the same command. In this example, we want to get the rows containing data from female Adelie penguins.
+
+```{r}
+filter(penguins,
+       sex == "female",
+       species == "Adelie")
+```
+
+Alternatively, we can combine multiple conditions with the `&` symbol (meaning "and") and the `|` symbol (meaning "or"). We can re-write the previous filter command using the `&` symbol:
+
+```{r}
+filter(penguins,
+       sex == "female" & species == "Adelie")
+```
+
+We can use the `|` symbol to retrieve data from female penguins that are either Adelie or Chinstrap:
+
+```{r}
+filter(penguins,
+       sex == "female",
+       species == "Adelie" | species == "Chinstrap")
+```
+
+Let's use the filter function to create a new data frame that just contains rows from our penguin data from Gentoo penguins.
+
+```{r}
+gentoo_penguin_data <- filter(penguins, species == "Gentoo")
+```
+
+## Select
+
+With the `filter()`{.r} function, we can choose which rows we want to extract from our data. If we want to choose which columns to extract, we use the `select()`{.r} function. Here we extract the columns containing the species, flipper length, and body mass from each penguin in the dataset.
+
+```{r}
+select(penguins, species, flipper_length_mm, body_mass_g)
+```
+
+From this example code, we can see the general form of the `select()`{.r} function: `select(dataset, column_name1, column_name2, ...)`. The `select()`{.r} function is very useful for reducing our dataset to just the columns we need for a particular calculation or analysis. This is critical when we're working with input data that have 100s of columns.
+
+Above, we created a data frame that only contains data from Gentoo penguins. Now let's use the `select()`{.r} function on that data frame to extract the columns containing the species, flipper length, and body mass measurements. We'll save the selected data frame in a new variable.
+
+```{r}
+gentoo_body_and_flipper <- select(gentoo_penguin_data,
+                                  species,
+                                  flipper_length_mm,
+                                  body_mass_g)
+```
+
+## Mutate
+
+![Artwork by @allison_horst](https://cdn.myportfolio.com/45214904-6a61-4e23-98d6-b140f8654a40/bd4ae264-ae51-4d18-bd60-7a058ab42fba.png?h=d46d02d7359a3670c9d94bcc59b491b7){fig-alt="Cartoon representation of mutate operation" fig-align="center" width="560"}
+
+If we want to add new columns to a data frame, We use the `mutate()`{.r} function. Here, we add a new column which contains the body mass of each penguins in kilograms (the "body_mass_g" column is in grams).
+
+```{r}
+mutate(penguins,
+       body_mass_kg = body_mass_g / 1000)
+```
+
+From this code, we can see the general form of the `mutate()`{.r} function: `mutate(dataset, new_column_name = expression)`. In this example, used the "/" operator to indicate we want to divide penguin body mass in grams by 1000, to calculate the body mass in kilograms. This is an example of an **arithmetic operator**.
+
+::: callout-note
+### Arithmetic Operators
+
+R supports several operators that allow us to perform various mathematical operations:
+
+-   **+** addition
+-   **-** subtraction
+-   **\*** multiplication
+-   **/** division
+-   **\^** exponentiation
+
+When we use these operators on the column of a data frame, they're designed to work separately on each value in the column (called an "element wise" operation).
+:::
+
+Note that `mutate()`{.r} adds new columns to the right side of the data frame. If we want to add new columns in different locations, we can use the `.before` and `.after` arguments.
+
+```{r}
+mutate(penguins,
+       body_mass_kg = body_mass_g / 1000,
+       .after = body_mass_g)
+```
+
+We can provide `.after` and `.before` with either a column name (like we did above), or a number referring to the position in the table we want to insert the new column. Here we insert the new column before the current second column:
+
+```{r}
+mutate(penguins,
+       body_mass_kg = body_mass_g / 1000,
+       .before = 2)
+```
+
+Let's use the `mutate()`{.r} function to add a body mass (mg) column to the data frame of Gentoo data we've been working on so far. We'll save this expanded data frame in a new variable.
+
+```{r}
+gentoo_body_mg_and_flipper <- mutate(gentoo_body_and_flipper,
+                                     body_mass_mg = body_mass_g * 1000,
+                                     .after = body_mass_g)
+```
+
+## Pipes in R
+
+R has a functionality allowing us to take the output of one function and provide it as input to another. The general name for this type of operation is "piping". The pipe operator in R is `|>`{.r}. Here we use the `filter()`{.r} function, the R pipe (`|>`{.r}), and the `head()`{.r} function to view the first six rows returned by the filter function.
+
+```{r}
+filter(penguins, species == "Gentoo") |> head()
+```
+
+In this R code, we use the `filter()`{.r} command to extract all of the rows from the data containing measurements from Gentoo penguins. We then use the `|>`{.r} operator to send the output of the `filter()`{.r} function to the `head()`{.r} function. The `head()`{.r} function returns the first 6 rows from its input data frame.
+
+::: callout-tip
+### RStudio's pipe shortcut
+
+When working in RStudio, we can use the shortcut `Ctrl/Cmd` + `Shift` + `M` to enter the pipe.
+:::
+
+Over the last three sections we used the `filter()`{.r}, `select()`{.r}, and `mutate()`{.r} functions to create this data frame:
+
+```{r}
+head(gentoo_body_mg_and_flipper)
+```
+
+We saved each of the intermediates to their own variables (take a look in the *Environment* tab to see the list of variables). Alternatively, we can use the pipe to generate the same data frame without saving any of the intermediate results:
+
+```{r}
+penguins |> 
+    filter(species == "Gentoo") |> 
+    select(species, flipper_length_mm, body_mass_g) |> 
+    mutate(body_mass_mg = body_mass_g * 1000,
+           .before = body_mass_g) |> 
+    head()
+```
+
+With the pipe operator, we can combine many simple R functions to create complex pipelines, all while keeping our code readable.
+
+Under the hood, the `|>`{.r} operator is taking the output of the function on its left and feeding it into the first argument of the function on its right. All *dplyr* functions are fully compatible with the pipe operator (the first argument of every function is the input data frame).
+
+::: callout-note
+### Another Pipe Operator: `%>%`{.r}
+
+The `|>`{.r} pipe operator is a relatively recent (May 2021) addition to base R. Before that, we needed to use the `%>%`{.r} operator, also called the "magrittr pipe." This operator is still around and used in a lot of existing R code, but it requires us to load the *magrittr* package. In these lessons, we'll only use the native `|>`{.r} pipe operator, so we don't need to load any extra packages.
+:::
+
+## Arrange
+
+We can use the `arrange()`{.r} function to sort the rows in our data according to the values in one or more columns. Here we sort the penguins by bill depth:
+
+```{r}
+penguins |> 
+    arrange(bill_length_mm)
+```
+
+By default, `arrange()`{.r} sorts values from smallest to largest (ascending). We can use the `desc()`{.r} function inside arrange to sort values from largest to smallest (descending).
+
+```{r}
+arrange(penguins, desc(bill_depth_mm))
+```
+
+Lastly, we can sort data based on multiple columns:
+
+```{r}
+arrange(penguins, island, desc(bill_depth_mm))
+```
+
+## Distinct
+
+The `distinct()`{.r} function returns all unique rows from the data frame. We can provide the names of the columns we want to search for unique combinations. Here we want to find all unique combinations of species and island.
+
+```{r}
+distinct(penguins, island, species)
+```
+
+If we don't specify any column names, the `distinct()`{.r} function will look for unique combinations across *all* columns.
+
+```{r}
+distinct(penguins)
+```
+
+## Grouping and Summarizing Data
+
+We started transforming these data because we wanted to extract some summary stats about the body mass and flipper length of the three penguin species in our data. With the functions we've used so far, we can extract the data we need for a specific penguin species. Here, we use the `summarize()`{.r} function to calculate the mean mean body mass and flipper length across all Gentoo penguins in our data.
+
+```{r}
+penguins |> 
+    filter(species == "Gentoo") |> 
+    select(species, flipper_length_mm, body_mass_g) |> 
+    na.omit() |> # Filter out any rows containing NA values in any columns
+    summarize(mean_body_mass_g = mean(body_mass_g),
+              mean_flipper_length_mm = mean(flipper_length_mm))
+```
+
+In this example we use *dplyr* functions and the pipe operator to filter our data for Gentoo penguins, select our columns of interest (body_mass_g and flipper_length_mm), and the `summarize()`{.r} function (also from *dplyr*) to calculate the mean values across data in the body_mass_g and flipper_length_mm columns.
+
+::: callout-note
+### Missing Data
+
+The first time we ran the code above, we didn't use the `na.omit()`{.r} function and our mean body mass and flipper length calculations returned 'NA' values. 'NA' is one of the ways R represents missing data, and it turns out one of the penguins in our dataset has 'NA' values for all of its measurements (you can find it by looking through the data with the `View()`{.r} function). Many function that perform mathematical operations (like mean), will return an 'NA' value if any of its inputs are 'NA'. This is so we're aware there are 'NA' values present in our data and can handle them accordingly. Once we realized there was a single 'NA' values in our data, we excluded it using the `na.omit()`{.r} function.
+:::
+
+From this code, we see the general form of the `summarize()`{.r} function: `summarize(dataset, column_name = expression)`. This is quite similar to the `mutate()`{.r} function. However, while the `mutate()`{.r} function performs a calculation for each row in a data frame column, the `summarize()`{.r} function performs one calculation using all of the data in a column.
+
+Using the `summarize()`{.r} function we can quickly calculate summary stats from the columns in a data frame. In order to get the same summary stats for the other penguin data, we'd need to repeat the same set of operations two more times (one for each species). Ideally, we want to be able to work on data from all three penguin species at the same time.
+
+We can do this with the `group_by()`{.r} function.
+
+```{r}
+penguins |> 
+    select(species, body_mass_g, flipper_length_mm) |> 
+    group_by(species) |> 
+    # This time we're using arguements in the mean function to remove the NA values
+    summarize(mean_body_mass_g = mean(body_mass_g, na.rm = TRUE),
+              mean_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE))
+```
+
+Here we use the `group_by()`{.r} function to group the data according to the species column, *before* using the `summarize()`{.r} function. This grouping causes the `summarize()`{.r} function to perform calculations across the data within each group (species, in this case), rather than across the entire data frame.
+
+The means don't give us the whole picture, so let's calculate the standard deviations for each of these measurements, as well as the total number of penguins from each species.
+
+```{r}
+#| eval: false
+penguins |> 
+    select(species, body_mass_g, flipper_length_mm) |> 
+    group_by(species) |> 
+    na.omit() |>
+    summarize(mean_body_mass_g = mean(body_mass_g),
+              sd_body_mass_g = sd(body_mass_g),
+              mean_flipper_length_mm = mean(flipper_length_mm),
+              sd_mean_flipper_length_mm = sd(flipper_length_mm),
+              Total_animals = n())
+```
+
+It looks like the raw numbers agree with what we saw in the figure we generated in the previous lesson. Namely, the Gentoo penguins tend to have more mass and longer flippers than the other two species. And while the Chinstrap penguins have higher mean body mass and flipper length than the Adélie penguins, the standard deviations in these measurements are large enough that there probably isn't a significant difference in size between the two. In the coming lessons, we'll apply some statistical tests to these data to test our hypotheses.
+
+::: callout-note
+### Not all operations are equivalent
+
+So far, we've seen two ways of keeping 'NA' values from affecting our calculations: 1. The `na.omit()`{.r} function removes all rows from a data frame that contain 'NA' values in any column. 2. The `mean()`{.r} and `sd()`{.r} have an `na.rm` argument that excludes all 'NA' values from the mean / standard deviation calculations when we set it to TRUE (`na.rm = TRUE`).
+
+We used the `na.omit()`{.r} function to exclude the 'NA' values before we used the `summarize()`{.r} function to calculated all of our summary statistics above. However, if we skip the `na.omit()`{.r} function and instead use the "na.rm" argument for `mean()`{.r} and `sd()`{.r} to exclude the 'NA' values, we get a slightly different result.
+
+```{r}
+penguins |> 
+    select(species, body_mass_g, flipper_length_mm) |> 
+    group_by(species) |> 
+    # na.omit() |>
+    summarize(mean_body_mass_g = mean(body_mass_g, na.rm = TRUE),
+              sd_body_mass_g = sd(body_mass_g, na.rm = TRUE),
+              mean_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE),
+              sd_mean_flipper_length_mm = sd(flipper_length_mm, na.rm = TRUE),
+              Total_animals = n())
+```
+
+Compare these results to the previous code using `na.omit()`{.r}, paying close attention to the "Total_animals" column. If there are too many columns in the results to compare them easily, you could always use the `select()`{.r} function to grab just the "species" and "Total_animals" columns.
+
+When we used the `na.rm` argument approach, we ended with with one extra penguin in the "Total_animals" column for the Adélie and Gentoo penguins. This is because the `n()`{.r} function counts rows, regardless of their contents (you can confirm there's no `na.rm` argument for `n()`{.r} using the R docs). While there are many different ways to accomplish the same task, they are not all equivalent in all cases. If we weren't also using the `n()`{.r} function to count the total number of penguins in each species, both of our methods for removing the 'NA' values would have produced the same result.
+:::
+
+Even though this is a toy example, we've created a flexible analysis pipeline by combining these *dplyr* functions, The code we've written will still work if we collect new data from different penguin species, add additional biological measurements beyond body mass and flipper length, or remove some of the rows from the original input data.
+
+# R session information
+
+Here we report the version number for R and the package versions we used to perform the analyses in this document.
+
+```{r}
+sessionInfo()
+```
