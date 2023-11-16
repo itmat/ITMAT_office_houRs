@@ -321,7 +321,7 @@ frame of Gentoo data we've been working on so far. We'll save this expanded data
 frame in a new variable.
 
 ```{r}
-gentoo_body_kg_and_flipper <- mutate(gentoo_body_and_flipper,)
+gentoo_body_mg_and_flipper <- mutate(gentoo_body_and_flipper,)
 ```
 
 
@@ -354,7 +354,7 @@ Over the last three sections we used the `filter()`{.r}, `select()`{.r}, and
 `mutate`{.r} functions to create this data frame:
 
 ```{r}
-head(gentoo_body_kg_and_flipper)
+head(gentoo_body_mg_and_flipper)
 ```
 
 We saved each of the intermediates to their own variables (take a look in the
