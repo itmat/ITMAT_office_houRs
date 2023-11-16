@@ -1,0 +1,111 @@
+---
+title: "Named and positional arguments"
+date: 2023-11-16
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+---
+
+```{r}
+library(palmerpenguins)
+library(ggplot2)
+```
+
+Consider the following code we use to create a scatterplot from the penguin
+data:
+
+```{r}
+#| fig-width: 2
+#| fig-align: center
+ggplot(data = penguins,
+       mapping = aes(x = body_mass_g, y = flipper_length_mm)) +
+    geom_point()
+```
+
+We use the `data` and `mapping` arguments in the `ggplot()`{.r} function to
+define the input data and the aesthetic mappings, respectively. When
+constructing this code, we explicitly write the names of arguments (e.g.
+`data = ...`). This is called using **named arguments**.
+
+Compare this to the following code, which generates the exact same scatterplot:
+
+```{r}
+#| fig-width: 2
+#| fig-align: center
+ggplot(penguins,
+       aes(x = body_mass_g, y = flipper_length_mm)) +
+    geom_point()
+```
+
+Why do you think this works? *Hint: look at the 'Usage' section on the help page
+for `ggplot()`{.r}*
+
+When we don't provide the names of arguments, R uses their positions in the
+function call to identify which values to assign to which argument. This is
+called using **positional arguments**. You can find the order of arguments that
+R expects for a function by referring to the help documentation, or by using the
+`args()`{.r} function.
+
+```{r}
+args(ggplot)
+```
+
+Now that we've seen the order of the arguments the `ggplot()`{.r} function expects,
+let's re-examine the second block of code we used to create the scatterplot.
+
+```{r}
+#| eval: false
+ggplot(penguins,
+       aes(x = body_mass_g, y = flipper_length_mm)) +
+    geom_point()
+```
+
+The first argument the `ggplot()`{.r} function expects in the `data` argument.
+In this code, `penguins` is the first argument we provide. Since we didn't
+specify an argument name, R automatically assigns it to the `data` argument.
+Similarly, the aesthetic mapping (`aes(...)`{.r}) is the second argument we
+provide. Again, we didn't specify an argument name so R automatically assigns it
+to `mapping`, the next unused argument in list of arguments returned by the
+`args(ggplot)`{.r}.
+
+Both argument conventions offer advantages. When we use named arguments, we can
+provide them in any order.
+
+```{r}
+#| eval: false
+ggplot(mapping = aes(x = body_mass_g, y = flipper_length_mm),
+       data = penguins) +
+    geom_point()
+```
+
+Positional arguments save us some typing and make use more efficient
+programmers, particularly for functions that we re-use often in our code. For
+example, since the first argument for most *dplyr* functions is the input data,
+we tend define the data using a positional argument.
+
+We can also use a mix of named and positional arguments in the same function
+call:
+
+```{r}
+#| eval: false
+ggplot(aes(x = body_mass_g, y = flipper_length_mm),
+       data = penguins) +
+    geom_point()
+```
+
+Even though the mapping `aes()`{.r} is the first positional argument R assigns
+it to the `mapping` argument. This is because we've explicitly defined the data
+as a named argument elsewhere in the function call. When R assigns positional
+arguments, it first assigns all of the named arguments, then assigns positional
+arguments to whatever is left. In the above example, when R goes to assign the
+aesthetics it skips the `data` argument, because we define `data` using a named
+argument, and assigns `aes(...)`{.r} to the next `mapping`, which is the next
+un-used argument after `data`.
+
+```{r}
+#| echo: false
+sessionInfo()
+```
