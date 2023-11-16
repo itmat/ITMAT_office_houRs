@@ -99,7 +99,7 @@ RStudio's 'Projects' to manage our work.
 We can look at the contents of `penguin_data_from_base_r` by entering the
 variable name into the R console.
 
-```{r paged.print=FALSE}
+```{r paged.print=FALSE, R.options=list(max.print="150")}
 penguin_data_from_base_r
 ```
 
