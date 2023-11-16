@@ -19,7 +19,6 @@ be a little different, depending on your web browser.
     + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-00_R-and-Rstudio-setup.qmd)
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-00_R-and-Rstudio-setup.qmd) (save to `LESSONS/` subdirectory)
-    
 
 * Lesson 1: Visualizing data with *ggplot2*
     + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-01_Visualizing-data-with-ggplot2.qmd)
@@ -35,3 +34,4 @@ be a little different, depending on your web browser.
 * Lesson 3: Exploring geom_ functions and customizing ggplots
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-03_Exploring-geom-functions-and-customizing-ggplots.qmd) (save to `LESSONS/` subdirectory)
+
