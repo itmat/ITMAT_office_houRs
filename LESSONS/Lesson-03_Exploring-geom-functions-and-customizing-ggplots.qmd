@@ -1,0 +1,661 @@
+---
+title: "Lesson 3: Exploring geom_ functions and customizing ggplots"
+date: 2023-11-16
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+editor: visual
+---
+
+# Prepare the R environment for this lesson
+
+For this lesson we'll need four packages:
+
+-   *medicaldata* (new package)
+-   *palmerpenguins*
+-   *ggplot2*
+-   *dplyr*
+
+First, we need to install the *medicaldata* package, using the
+`install.packages()`{.r} function.
+
+```{r}
+
+```
+
+Now we use the `library()`{.r} function to load all of these packages.
+
+```{r}
+
+```
+
+
+# The *medicaldata* Package and the *covid_testing* Dataset
+
+In this lesson we'll be using a dataset from the *medicaldata* package. The
+medicaldata package contains several real medical datasets, intended for use in
+teaching R. We can browse the list of available datasets on the [medicaldata
+package website](https://higgi13425.github.io/medicaldata/). We'll be using the
+`covid_testing` dataset for this lesson. To get a feel for this dataset, take a
+look at the "covid_testing" documentation pages on the medicaldata package
+website.
+
+We can also access a quick descripiton of the covid_testing data frame through
+R's help docs.
+
+```{r}
+#| eval: false
+help("covid_testing")
+```
+
+
+# Data Visualization with the *ggplot2* Package
+
+*ggplot2* is one of the core tidyverse packages. It is a design system allowing
+us to assemble complex figures from simple components that we "layer" on top of
+each other. The documentation for this package is excellent. We can access it
+either through the RStudio interface, or through the [ggplot2 website](https://ggplot2.tidyverse.org/)
+
+## Refresher
+
+In the first lesson, we used ggplot2 to generate a scatterplot from the
+penguin dataset. With this code block, we tell ggplot2 to use values from the
+'bill_length_mm' column as x-axis coordinates, and values from the
+'flipper_length_mm' column as y-axis coordinates. Remember, the `aes()`{.r} or
+"aesthetic" function tells ggplot2 how to map the columns in our data to
+visual components of the graph.
+
+```{r}
+ggplot(data = penguins,
+       mapping = aes(x = bill_length_mm,
+                     y = flipper_length_mm)) +
+    geom_point()
+```
+
+We can streamline this code by using the R pipe (`|>`{.r}) and by specifying
+`data` and `mapping` as *positional arguments*. *Refer to the `ggplot()`{.r}
+documentation for the order of its arguments.*
+
+```{r}
+
+```
+
+Note, when we're constructing figures with ggplot2, we connect the ggplot2
+functions using the '+' sign, instead of the R pipe. This is because ggplot2 was
+written before there were any pipes in R. If we accidentally use an R pipe
+instead of a '+' sign, we'll get an error
+
+```{r}
+#| error: true
+penguins |> 
+    ggplot(aes(x = bill_length_mm,
+               y = flipper_length_mm)) |> 
+    geom_point()
+```
+
+## Aesthetic Mapping
+
+Let's modify the code to map the 'species' column to the 'color' aesthetic.
+
+```{r}
+penguins |> 
+    ggplot(aes(x = bill_length_mm,
+               y = flipper_length_mm)) +
+    geom_point()
+```
+
+What happens if we map the 'body_mass_g' column to color instead?
+
+```{r}
+penguins |> 
+    ggplot(aes(x = bill_length_mm,
+               y = flipper_length_mm)) +
+    geom_point()
+```
+
+Notice that we see a color gradient. When we used species to color the points,
+we ended up with three discrete colors. This is because the values in the
+body_mass_g and species columns have different **data types**, which affect how
+R interacts with them.
+
+::: callout-note
+### Data Types
+
+A value's data type determines how it's stored in memory and what type of
+operations we can perform with it. R supports several basic variable types:
+
+1.  **double** - A number or *numeric* type that has decimals. This is the
+    default type for any number in R. We can use doubles with all arithmetic
+    operators.
+2.  **integer** - A number without any decimal places. If we want an integer, we
+    need to create one explicitly using a function like `as.integer()`{.r}.
+    Integers also work with all arithmetic operators.
+3.  **character** - Text data, enclose by quotation marks, that can contain
+    letters, numbers, and special characters. These are called "strings" in
+    other programming languages. Characters are the most flexible type in terms
+    of what they can store, but the don't work with arithmetic operators.
+4.  **factor** - R's representation of categorical data. These are similar to
+    characters in that they can contain letters, numbers, and special
+    characters. This also means it's generally easy to make factors out of
+    character data. When we create a factor variable or column , we define all
+    possible categories, or "levels", that variable/column can assume. There's
+    additional complexity to factors that we'll get into later.
+5.  **logical** - A binary value that can only be `TRUE` or `FALSE`. We've seen
+    logical values when we used the relational operators (e.g. ==, \>, !=). We
+    can tell these apart from characters, because `TRUE` and `FALSE` aren't
+    surrounded by any quotation marks. Lastly, we can use these with arithmetic
+    operators. `TRUE` is treated like 1, and `FALSE` is treated like 0
+
+We can check the type of any object in R using the `class()`{.r} function.
+:::
+
+Species is a factor type while body mass is a numeric type. Factors are discrete
+variables, so ggplot2 maps them to discrete aesthetics. Numeric types are
+continuous variables, so ggplot2 cannot map them to discrete values.
+
+We can use also use expressions as aesthetic mappings.
+
+```{r}
+penguins |> 
+    ggplot(aes(x = bill_length_mm,
+               y = flipper_length_mm,
+               color = bill_length_mm > 45)) +
+    geom_point()
+```
+
+
+## Mapping vs Setting Aesthetics
+
+Above we used the `aes()`{.r} function to map columns in our penguin data to the
+aesthetics in our plots. Let's see what happens when we move the aesthetic
+arguments outside of the `aes()`{.r} function.
+
+```{r}
+penguins |> 
+    ggplot(aes(x = bill_length_mm,
+               y = flipper_length_mm)) +
+    geom_point(color = "darkorange")
+```
+
+This is called **setting** an aesthetic, because we're not mapping any of our
+data to the aesthetic. When we set aesthetic arguments, we provide them with
+scalar values. The specific values will depend upon the aesthetic (i.e. some are
+numbers, some require known values).
+
+Look at the `geom_point()`{.r} documentation, and scroll down to the Aesthetics
+section. This lists all the different aesthetics this function supports. Try
+adding some of these aesthetics to the above plot, both in and out of the
+`aes()`{.r} function. *Hint: we can print a list of R color constants with the
+`colors()`{.r} function*.
+
+```{r}
+penguins |> 
+    ggplot(aes(x = bill_length_mm,
+               y = flipper_length_mm)) +
+    geom_point()
+```
+
+This **vignette** from the ggplot package describes all of the aesthetics and
+the various values they can accept. We can find this vignette on the [ggplot2
+CRAN page](https://cran.r-project.org/web/packages/ggplot2/), or by using the
+`vignette()`{.r} function.
+```{r}
+#| eval: false
+vignette("ggplot2-specs")
+```
+
+:::{.callout-note}
+### Vignettes
+Tutorials demonstrating the functionality of a package are called **vignettes**.
+They're another way to familiarize ourselves with a new package. These are
+downloaded to your system when you install a package and are accessible through
+the package website (on CRAN or Bioconductor). Not every package comes with a
+vignette, since they are not a required by CRAN or Bioconductor.
+:::
+
+
+# Data Exploration with `geom_` Functions
+
+So far we've seen two examples of `geom_`{.r} functions: `geom_point()`{.r} and
+`geom_smooth()`{.r}. These functions control how our data are represented, or
+painted on the ggplot2 canvas. The ggplot2 package includes many different
+`geom_`{.r} functions that draw different shapes and extract different types of
+summary information from our data. Here are a few of the functions you'll use
+most commonly for exploratory data analyses.
+
+
+## Bar chart
+
+The `geom_bar()`{.r} function generates bar charts, which are useful for
+plotting the distributions of categorical data. Let's use this to get a breakdown
+of the number of COVID-19 tests by their result (positive, negative, invalid).
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = result)) +
+    geom_bar()
+```
+
+When we use the `geom_bar()`{.r} function, we only provide it with an aesthetic
+mapping for one of the axes (x or y). It automatically calculates the values for
+the other axis, based on the distribution of our data across the axis we
+specified.
+
+
+## Histogram & Freqpoly
+
+The `geom_histogram()`{.r} function calculates discrete density bins, given just
+an x-coordinate mapping. Its useful for visualizing the distributions of
+continuous numerical variables. Let's use the `geom_histogram()`{.r} function to
+plot the distribution of COVID-19 tests over the first 100 days of the
+`covid_testing` dataset.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_histogram()
+```
+
+Note, ggplot2 printed a status message with the histogram, pointing us toward
+two arguments for the `geom_histogram()`{.r} function: `bins`, and `binwidth`.
+
+The `bins` argument controls the number of bins it groups our data into. The
+above plot sets the `bins` argument to a value of 30 (the default). Try
+adjusting it below. What do you think will happen to the graph if we increase
+the `bins` value? What if we decrease it?
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_histogram(bins = 30)
+```
+
+Alternatively, we can use the `binwidth` argument to set the size of the
+interval on the x-axis that defines a bin. Whatever value we enter for the
+`binwidth` uses the same units as the x-axis (days, in our case). What do you
+think will happen to the histogram as we increase the `binwidth`? And if we
+decrease it?
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_histogram(binwidth = 10)
+```
+
+The `geom_freqpoly()`{.r} function generates the same discrete distribution
+graph as `geom_histogram()`{.r}, except it represents the data as lines, instead
+of bars.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_freqpoly()
+```
+
+You can confirm these two functions work the same way by plotting them together.
+Try that here:
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    
+    
+```
+
+The line representation produced by `geom_freqpoly()`{.r} can make it easier to
+plot multiple distributions together.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day, color = result)) +
+    geom_freqpoly()
+```
+
+For comparison, here's the same data plotted as a histogram:
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day, fill = result)) +
+    geom_histogram()
+```
+
+
+## Density
+
+The `geom_density()`{.r} function generates a smoothed density estimate for the
+distribution of a continuous variable. This is similar to the histogram and
+freqpoly geoms, except those geoms generate binned representations of the
+distribution, while `geom_density()`{.r} generates a continuous representation
+of the distribution.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_density()
+```
+
+We can think of this like a probability distribution estimate for all the
+possible values our x-axis variable can assume (the area under the curve should
+sum approximately to 1).
+
+:::{.callout-note}
+### The `after_stat()`{.r} function
+
+We can use the `after_stat()`{.r} function to access the derived stats that the
+`geom_density()`{.r} function is calculating behind the scenes. Here we use
+this function to change the y-value to the number of COVID-19 tests, instead of
+the density value.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_density(aes(y = after_stat(count)))
+```
+
+We can refer to the the "Computed variables" section of a geom function's help
+documentation to find the list of summary variables we can access with
+`after_stat()`{.r}.
+:::
+
+Here we see that the `geom_density()`{.r} curve is effectively a smoothed
+version of the `geom_freqpoly()`{.r} line.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_freqpoly(binwidth = 1) +
+    geom_density(aes(y = after_stat(count)))
+```
+
+Why do you think these curves diverge when we increase the 'binwidth' for
+`geom_freqpoly()`{.r}?
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_freqpoly(binwidth = 3) +
+    geom_density(aes(y = after_stat(count)))
+```
+
+
+## Boxplot & Violin plot
+
+The `geom_boxplot()`{.r} function offers another way to summarize the
+distributions of continuous data. It calculates and plots the median and
+quartiles of a continuous variable mapped to the x or y aesthetic.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(y = age)) +
+    geom_boxplot()
+```
+
+However, what makes boxplots truly useful is their ability to represent the
+relationship numerical and categorical variables. Here we break up the age
+distribution we plotted above, by COVID-19 test result.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = result, y = age)) +
+    geom_boxplot()
+```
+
+Looking at these boxplots, we see a subtle indication that patients with
+positive COVID-19 tests tend to skew a little older than those with negative
+tests (we'll need to actually apply a statistical test if we want to say
+anything more conclusive).
+
+Violin plots are a combination of the `geom_boxplot()`{.r} and
+`geom_density()`{.r} functions. The `geom_violing()`{.r} function plots a
+sideways, mirrored representation of a numeric variable's distribution.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = result, y = age)) +
+    geom_violin()
+```
+
+Violin plots can reveal more subtle differences in relationships between
+numerical and categorical variables than we can see with a boxplot, like
+biomodality in the underlying distributions.
+
+Here we'll graph the `geom_violin()`{.r} and `geom_boxplot()`{.r} plots
+together. How are the boxplots and violin plots similar? How are they different?
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = result, y = age)) +
+    geom_violin() +
+    geom_boxplot(alpha = 0.5)
+```
+
+Here we used the `alpha` aesthetic to control the transparency of the boxplot
+geom. Try changing the `alpha` value to see how it affects the graph.
+
+
+## Horizontal and Vertical Lines
+
+The `geom_hline()`{.r} and `geom_vline()`{.r} functions plot horizontal and
+vertical lines, respectively. They're useful for marking cutoffs and regions
+of interest in our plots.
+
+Here we use `geom_hline()`{.r} to add a line to our age distribution boxplots
+that marks the division between patients under and over 5 years of age.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = result, y = age)) +
+    geom_violin() +
+    geom_hline(yintercept = 5)
+```
+
+In this case, we *set* the value for the `yintercept` aesthetic, rather than
+mapping it to a column in our data.
+
+
+## Coordinate Transformations
+
+The `coord_cartesian()`{.r} function allows us to manually set the x- and y-axis
+ranges of our graphs. This allows us to focus on particular regions of interest.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = pan_day)) +
+    geom_histogram(binwidth = 1) +
+    coord_cartesian(xlim = c(0, 20))
+```
+
+The `coord_flip()`{.r} function allows us to swap the x- and y-axes.
+
+```{r}
+covid_testing |> 
+    ggplot(aes(x = result, y = age)) +
+    geom_boxplot() +
+    coord_flip()
+```
+
+There are many more `coord_` functions that give us fine control coordinate
+systems we use to create our ggplots.
+
+
+## Setting Color Scales
+
+Thus far we've just used the default color schemes ggplot2 provides. They're
+fine for prototyping our analyses, but we'll probably want to change these to
+something that looks better if we want to publish these figures. Now that you've
+gained some experience with the look and feel of the default settings for
+ggplot2 figures, you'll start to notice them when you read papers.
+
+To specify which colors get mapped to our data, we need to prepare a *vector*
+containing all of the colors we want to use.
+
+```{r}
+colors_for_covid_result <- c("grey","dodgerblue","orangered")
+```
+
+::: callout-note
+### Data Structures
+
+In our work so far, we've largely worked with tabular data stored in a data
+frame. A data frame is an example of a *data structure*. These are constructs in
+a programming language that are specially designed to store and organize data.
+We'll interact with several types of data structures over the course of these
+lessons:
+
+1.  **Vectors**: Store ordered sequences of values, all of which must have the
+    same type. We create vectors using the `c()`{.r} function ("combine"). The
+    individual values in a vector are called "vector elements".
+2.  **Data frame**: Rectangular data structure where columns are vectors (i.e.
+    all values in a column need to have the same type) that all have the same
+    length.
+3.  **Matrix**: Rectangular like a data frame, except every single values in a
+    matrix must have the same type. We often store metadata (e.g. gene IDs,
+    sample labels) as the row/column names, using the `rownames()`{.r} and
+    `colnames()`{.r} functions. Matrices are used for performing matrix math and
+    are often much faster for computations than data frames.
+:::
+
+With our color vector in hand, we use the `scale_fill_manual()`{.r} function to
+match these colors to the three COVID-19 test results in our data. Try changing
+the result mapping from fill to color and see what happens.
+
+```{r}
+covid_testing |> 
+    filter(age < 100) |> 
+    ggplot(aes(x = result, y = age, fill = result)) +
+    geom_boxplot() +
+    scale_fill_manual(values = colors_for_covid_result)
+```
+
+The colors are assigned to the results in alphabetical order.
+
+Instead of manually specifying the colors, we can also use existing collections
+of colors ("palettes") that come from various packages. On of the palettes
+packaged with ggplot2 is Color Brewer. We need to enter the name for one of
+Color Brewer's palettes. We can view the options with the
+`RColorBrewer::display.brewer.all()`{.r} function.
+
+```{r}
+covid_testing |> 
+    filter(age < 100) |> 
+    ggplot(aes(x = result, y = age, fill = result)) +
+    geom_boxplot() +
+    scale_fill_brewer(palette = "Dark2")
+```
+
+Another way to view the Color Brewer palettes is through the Color Brewer
+[website](https://colorbrewer2.org/). There are many options on this site that
+can help you find a good palette, including a toggle to limit your options to
+colorblind safe options.
+
+
+## Facets
+
+When we're plotting complex data, we often run into cases where it would be
+helpful to break up a figure into smaller sub-figures, each displaying a portion
+of the input data. We do this with the `facet_grid()`{.r} and `facet_wrap()`{.r}
+functions. In this example, we use facets to compare the distribution of ages
+by COVID-19 test results between the tests collected in the drive-thru or in the
+clinic.
+
+```{r}
+covid_testing |> 
+    filter(age < 100) |> 
+    ggplot(aes(x = result, y = age, fill = result)) +
+    geom_boxplot() +
+    scale_fill_manual(values = colors_for_covid_result) +
+    facet_wrap(facets = vars(drive_thru_ind))
+```
+
+The `vars()`{.r} function is like a version of the `aes()`{.r} function that's
+specific to `facet_wrap()`{.r} and `facet_grid()`{.r}. They tell ggplot2 to map
+a variable from our dataset to the facets. You can think of the facet functions
+like graphical versions of the `group_by()`{.r} function we saw previously. They
+group data and aesthetics according to another variable in our data, and
+generate separate graph panels for the data in each group.
+
+Facets give use the ability to represent complex datasets with multiple
+variables in a more digestible manner. Here, we use `facet_grid()`{.r} to look
+for differences in age distributions by COVID-19 test results, across patient
+groups, and by whether or not the test samples as collected at a drive-thru.
+
+```{r}
+covid_testing |> 
+    filter(age < 100) |> 
+    ggplot(aes(x = result, y = age, fill = result)) +
+    geom_boxplot() +
+    scale_fill_manual(values = colors_for_covid_result) +
+    facet_grid(rows = vars(demo_group),
+               cols = vars(drive_thru_ind))
+```
+
+
+## Saving ggplots
+
+So far we've only created figures inside these markdown (Quarto) documents. We
+can render this file into an HTML or PDF output and then extract the images from
+the output file, but that's a lot of extra work if we just want one figure. For
+ggplot2 figures, we can use the `ggsave()`{.r} function to save figures to files
+on disk. The help doc for `ggsave()`{.r} contains information about how we can
+control the dimensions, scale, resolution, and format of the saved figure. Here,
+we'll save one of our faceted boxplot figures to the `IMAGES/` directory as a
+PNG.
+
+```{r}
+#| eval: false
+covid_testing |> 
+    filter(age < 100) |> 
+    # The "0" / "1" labels for the drive-thru status are not particularly clear.
+    # Here we create a new column with informative labels for drive-thru status.
+    # We'll use this new column for faceting, so the facet labels are clearer
+    # for potential readers.
+    mutate(
+        drive_thru_status =
+            case_match(drive_thru_ind,
+                       0 ~ "In clinic",
+                       1 ~ "Drive-thru")
+    ) |> 
+    ggplot(aes(x = result, y = age, fill = result)) +
+    geom_boxplot() +
+    scale_fill_manual(values = colors_for_covid_result) +
+    facet_grid(rows = vars(demo_group),
+               cols = vars(drive_thru_status),
+               scales = "free_y")
+ggsave(filename = "IMAGES/COVID-test-result-age-distribution_By-patient-group-and-drive-thru-status_Boxplots.png",
+       units = "in",
+       width = 6,
+       height = 6)
+```
+
+`ggsave()`{.r} automatically saves the last plot we generated. Alternatively, we
+can save our ggplot graph to a variable, and pass that variable to the `plot`
+argument of the `ggsave()`{.r} function.
+
+
+# *ggplot2* cheatsheet
+
+These are great reference materials for each of the main Tidyverse packages,
+including ggplot2. For day-to-day programming, it's helpful to print some of
+these out and keep them at your workstation. These offer a great way to quickly
+look up the info you need to run a function.
+
+
+# *ggplot2* extensions
+
+There are many packages that extend the functionality of ggplot2, either by
+adding additional functionality to ggplot2, or implementing new graphing
+functions based on ggplot2's conventions and grammar. You can browse a gallery
+of these extensions [here](https://exts.ggplot2.tidyverse.org/).
+
+
+# R session information
+
+Here we report the version number for R and the package versions we used to
+perform the analyses in this document.
+
+```{r}
+
+```
