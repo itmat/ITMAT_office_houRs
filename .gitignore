@@ -17,3 +17,6 @@ LESSONS/*
 !LESSONS/*/
 LESSONS/*/*
 !LESSONS/*/*.qmd
+# Ignore all files in NOTES directory, except for quarto docs
+NOTES/*
+!NOTES/*.qmd
