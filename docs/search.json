@@ -67,7 +67,7 @@
     "href": "lessons.html",
     "title": "Lessons",
     "section": "",
-    "text": "Note\n\n\n\nTo download a file from the list below, right-click on the link and select the “Save Link As…” option (on Firefox). The specific text for this option might be a little different, depending on your web browser.\n\n\n\n\nLesson 0: R and RStudio setup\n\nView completed lesson\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\n\n\nLesson 1: Visualizing data with ggplot2\n\nView completed lesson\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\nGraph image (save to IMAGES/ subdirectory)\n\n\nLesson 2: Working with tabular data\n\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\nData file (save to DATA/ subdirectory)\n\n\n\n\n\n\n Back to top"
+    "text": "Note\n\n\n\nTo download a file from the list below, right-click on the link and select the “Save Link As…” option (on Firefox). The specific text for this option might be a little different, depending on your web browser.\n\n\n\n\nLesson 0: R and RStudio setup\n\nView completed lesson\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\n\n\nLesson 1: Visualizing data with ggplot2\n\nView completed lesson\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\nGraph image (save to IMAGES/ subdirectory)\n\n\nLesson 2: Working with tabular data\n\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\nData file (save to DATA/ subdirectory)\n\n\nLesson 3: Exploring geom_ functions and customizing ggplots\n\nDownloads:\n\nQuarto doc (save to LESSONS/ subdirectory)\n\n\n\n\n\n\n Back to top"
   },
   {
     "objectID": "LESSONS/COMPLETED/Completed_Lesson-01_Visualizing-data-with-ggplot2.html",
