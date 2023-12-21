@@ -33,6 +33,7 @@ be a little different, depending on your web browser.
         - [Data file](DATA/penguins.csv) (save to `DATA/` subdirectory)
 
 * Lesson 3: Exploring geom_ functions and customizing ggplots
+    + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-03_Exploring-geom-functions-and-customizing-ggplots.qmd)
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-03_Exploring-geom-functions-and-customizing-ggplots.qmd) (save to `LESSONS/` subdirectory)
 
