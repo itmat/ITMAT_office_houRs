@@ -44,7 +44,7 @@ package website](https://higgi13425.github.io/medicaldata/). We'll be using the
 look at the "covid_testing" documentation pages on the medicaldata package
 website.
 
-We can also access a quick descripiton of the covid_testing data frame through
+We can also access a quick description of the covid_testing data frame through
 R's help docs.
 
 ```{r}

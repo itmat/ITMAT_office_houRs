@@ -58,8 +58,8 @@ the packages we need for the current analyses.
 
 When we start to type a function's name, and RStudio's tab-completion prompt
 opens up, the package for each function is listed in curly bracers to the right
-of the function's name. As we're writing code, we can use this make sure we're
-using the correct version of the function.
+of the function's name. As we're writing code, we can use this to make sure
+we're using the correct version of the function.
 :::
 
 # Reading data from files {#read-data-from-files}
@@ -262,7 +262,9 @@ gentoo_body_and_flipper <- select(gentoo_penguin_data, species, )
 
 ## Mutate
 
-![Artwork by @allison_horst](https://cdn.myportfolio.com/45214904-6a61-4e23-98d6-b140f8654a40/bd4ae264-ae51-4d18-bd60-7a058ab42fba.png?h=d46d02d7359a3670c9d94bcc59b491b7){fig-alt="Cartoon representation of mutate operation" fig-align="center" width="560"}
+![Artwork by
+@allison_horst](https://cdn.myportfolio.com/45214904-6a61-4e23-98d6-b140f8654a40/bd4ae264-ae51-4d18-bd60-7a058ab42fba.png?h=d46d02d7359a3670c9d94bcc59b491b7){fig-alt="Cartoon representation of mutate operation"
+fig-align="center" width="560"}
 
 If we want to add new columns to a data frame, We use the `mutate()`{.r}
 function. Here, we add a new column which contains the body mass of each
@@ -324,14 +326,13 @@ frame in a new variable.
 gentoo_body_mg_and_flipper <- mutate(gentoo_body_and_flipper,)
 ```
 
-
 ## Pipes in R
 
 R has a functionality allowing us to take the output of one function and provide
 it as input to another. The general name for this type of operation is "piping".
-The pipe operator in R is `|>`{.r}. Here we use the `filter()`{.r}
-function, the R pipe (`|>`{.r}), and the `head()`{.r} function to view the first
-six rows returned by the filter function.
+The pipe operator in R is `|>`{.r}. Here we use the `filter()`{.r} function, the
+R pipe (`|>`{.r}), and the `head()`{.r} function to view the first six rows
+returned by the filter function.
 
 ```{r}
 filter(penguins, species == "Gentoo") |> head()
@@ -358,8 +359,9 @@ head(gentoo_body_mg_and_flipper)
 ```
 
 We saved each of the intermediates to their own variables (take a look in the
-*Environment* tab to see the list of variables). Alternatively, we can use the pipe to
-generate the same data frame without saving any of the intermediate results:
+*Environment* tab to see the list of variables). Alternatively, we can use the
+pipe to generate the same data frame without saving any of the intermediate
+results:
 
 ```{r}
 penguins |> 
@@ -381,14 +383,12 @@ argument of every function is the input data frame).
 ::: callout-note
 ### Another Pipe Operator: `%>%`{.r}
 
-The `|>`{.r} pipe operator is a relatively recent (May 2021) addition to base
-R. Before that, we needed to use the `%>%`{.r} operator, also called the
-"magrittr pipe." This operator is still around and used in a lot of existing R
-code, but it requires us to load the *magrittr* package. In these lessons, we'll
-only use the native `|>`{.r} pipe operator, so we don't need to load any extra
-packages.
+The `|>`{.r} pipe operator is a relatively recent (May 2021) addition to base R.
+Before that, we needed to use the `%>%`{.r} operator, also called the "magrittr
+pipe." This operator is still around and used in a lot of existing R code, but
+it requires us to load the *magrittr* package. In these lessons, we'll only use
+the native `|>`{.r} pipe operator, so we don't need to load any extra packages.
 :::
-
 
 ## Arrange
 
@@ -487,7 +487,7 @@ We can do this with the `group_by()`{.r} function.
 penguins |> 
     select(species, body_mass_g, flipper_length_mm) |> 
     group_by(species) |> 
-    # This time we're using arguements in the mean function to remove the NA values
+    # This time we're using arguments in the mean function to remove the NA values
     summarize(mean_body_mass_g = mean(body_mass_g, na.rm = TRUE),
               mean_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE))
 ```
@@ -570,7 +570,6 @@ combining these *dplyr* functions, The code we've written will still work if we
 collect new data from different penguin species, add additional biological
 measurements beyond body mass and flipper length, or remove some of the rows
 from the original input data.
-
 
 # R session information
 

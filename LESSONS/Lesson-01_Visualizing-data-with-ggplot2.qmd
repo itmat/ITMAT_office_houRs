@@ -361,7 +361,7 @@ graph change if we fit separate regression lines within each species?
 
 ```
 
-The difference between these two graphs is an example of [Simspon's
+The difference between these two graphs is an example of [Simpson's
 paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox). Briefly, this is a
 phenomenon where a trend between two variables at the population level
 disappears, emerges, or reverses when we divide the population into groups. We
