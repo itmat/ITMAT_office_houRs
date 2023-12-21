@@ -23,6 +23,7 @@ First, we need to install the *medicaldata* package, using the
 `install.packages()`{.r} function.
 
 ```{r}
+#| eval: false
 
 ```
 
