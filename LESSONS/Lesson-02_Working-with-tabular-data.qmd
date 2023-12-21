@@ -116,9 +116,9 @@ the data.
 fig-align="center" width="2in"}
 
 As the name implies, the *readr* package contains functions designed to help us
-read tabular data from text files. These functions a lot of useful features to
-mark and handle problems we're likely to encounter in real-world data (we'll see
-some examples of this in later lessons).
+read tabular data from text files. These functions have a lot of useful features
+to mark and handle problems we're likely to encounter in real-world data (we'll
+see some examples of this in later lessons).
 
 To read this csv file, we're going to use the `read_csv()`{.r} function from the
 *readr* package. The command is almost identical to base R, except we have an
