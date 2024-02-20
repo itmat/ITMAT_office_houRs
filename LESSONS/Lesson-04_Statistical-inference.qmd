@@ -1,0 +1,465 @@
+---
+title: "Lesson 4: Statistical inference"
+date: 2024-02-20
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+editor: visual
+---
+
+# Prepare the R Environment
+
+Load the libraries we'll use below.
+
+```{r}
+library(palmerpenguins)
+library(ggplot2)
+library(broom)
+library(tibble)
+library(dplyr)
+library(tidyr)
+```
+
+We'll be working with the palmerpenguins data Several columns in the penguins
+tibble are stored as factors. Recall, this is how R represents categorical data.
+
+```{r}
+penguins
+summary(penguins)
+```
+
+For illustrative purposes, we're going to convert the 'sex' column to a
+character type (raw text).
+
+```{r}
+mod_penguins <- 
+    penguins |> 
+    mutate(sex = as.character(sex))
+mod_penguins
+```
+
+As we work through the example code below, we'll see how different data types
+interact with some of R's statistical analysis functions.
+
+
+# Statistical Inference in R
+
+In the previous lessons, we've focused largely on visualization and data
+manipulation. We've also used summary stats, and qualitative assessments from
+our figures to compare data between groups. Those types of approaches are
+excellent first steps when exploring a dataset.
+
+For example, let's create a plot comparing the distributions of male
+and female bill lengths and body masses, across all three penguin species.
+
+```{r}
+mod_penguins |> 
+    filter(!is.na(sex)) |> 
+    select(species, sex, bill_length_mm, body_mass_g) |> 
+    # Combine bill_length_mm and body_mass_g into two long columns ("metric" and
+    # "value"), so we can use them as faceting variables.
+    
+    ggplot(aes(x = sex,
+               y = value)) +
+    
+```
+
+These visuals suggest these penguin species exhibit sexual dimorphism across
+these two traits, but we haven't applied any sort of rigorous test. In this
+lesson, we'll add statistical analyses to our R skill set.
+
+# T-Test
+
+The T-test is one of the most commonly-used methods for testing for differences
+in means between two groups. It relies on the assumption that the data from each
+of the two groups follow a normal distribution, and they both have equal
+variances.
+
+Looking at the boxplots in the previous section, let's focus on the female vs
+male comparison of bill length in the Adelie penguins. This should make a good
+example dataset for the T-test.
+
+First, we'll generate a histogram of these data so we can get a better view of
+their distributions. Let's complete this graph together. Note, we'll need to
+transform the penguin data first, so we're just looking at bill length data from
+Adelie penguins. Then we'll need to construct the histogram.
+```{r}
+mod_penguins |> 
+    
+```
+
+The distributions are encouraging. They appear to be separated, roughly normal,
+and might have equal variances.
+
+Now we'll compare these data using the base R `t.test()`{.r} function.
+
+```{r}
+#| eval: false
+help("t.test")
+```
+
+Looking at the documentation for the `t.test()`{.r} function, we can see it
+supports a wide array of options.
+
+We can run this function with vector input or data frame input. We'll start by
+demonstrating with vector input:
+
+```{r}
+# Create vector of female data
+female_data <-
+    mod_penguins |> 
+    
+
+# Create vector of male data
+male_data <-
+    mod_penguins |> 
+    
+
+# Use both vectors as input to the t.test function
+t.test()
+```
+
+What information can we pull from the output?
+
+Now let's run the `t.test()`{.r} function with data frame input:
+
+```{r}
+input_for_ttest <- 
+    mod_penguins |> 
+
+t.test()
+```
+
+Are there any differences between the output from running `t.test()`{.r} in
+vector mode or in data frame mode?
+
+::: callout-note
+## Setting factor levels
+
+Many R functions, particularly those involved in statistical analyses, represent
+categorical data as a **factor**. Specifically, we use factors in cases when we
+have a finite number of categories (e.g. multiple choice answers, satisfaction
+survey data).
+
+We create factors from character data with the `factor()`{.r} function. We can
+specify all of the possible categories and their order using the 'levels'
+argument.
+
+```{r}
+species_factor <-
+    factor(mod_penguins$species,
+           levels = c("Chinstrap", "Gentoo", "Adelie"))
+```
+:::
+
+When we provided the `t.test()`{.r} function a data frame with a character
+column defining our comparisons groups, it automatically converted the character
+data to factor data. In doing so, it assigned the factor levels in alphabetical
+order ("female", "male"). If we wanted to make the male data our baseline group,
+we'd need to manually convert the character data to a factor and set the order
+of the levels.
+
+Let's modify the `t.test()`{.r} code we used above to turn the 'sex' column into
+a factor:
+
+```{r}
+input_for_ttest <- 
+    mod_penguins |> 
+           filter(!is.na(sex),
+                  species == "Adelie") |> 
+           select(sex, bill_length_mm) |> 
+    mutate(sex = factor(sex, levels = c("male", "female")))
+
+t.test(bill_length_mm ~ sex, data = input_for_ttest)
+```
+
+## Reformatting `t.test()`{.r} Output With The *broom* Package
+
+The output from the `t.test()`{.r} function contains a lot of detailed information.
+What kind of problem might it present in an analysis pipeline?
+
+The *broom* package has functions which are designed to "tidy" output from many
+of R's statistical analysis functions. Let's see how the `tidy()`{.r} function
+cleans up output from the `t.test()`{.r} function.
+
+```{r}
+t.test(bill_length_mm ~ sex, data = input_for_ttest) |> 
+    broom::tidy()
+```
+
+How does the information contained in the tidied output compare to the original
+output from the `t.test()`{.r} function?
+
+# Mann-Whitney U Test
+
+Earlier we discussed the assumptions underlying the T-test, once of which is the
+assumption that the data we're testing were sampled from a normal distribution.
+Since the T-test is assuming something about the distribution of its sample
+population, it is part of a family of tests we call **parametric test**.
+
+But what do we do if we don't know anything about the sample population, or
+don't feel comfortable assuming it follows a normal distribution? Luckily, there
+is another family of tests that don't make these distributional assumptions.
+These are so-called **non-parametric tests**.
+
+The non-parametric test that is most often used in place of the T-test is called
+the **Mann-Whitney U Test** (or the Wilcoxon rank-sum test). We'll skip
+discussing the specifics of how this test is performed.
+
+Let's examine the function we use to perform a Mann-Whitney U test in R: the
+`wilcox.test()`{.r} function.
+
+```{r}
+help("wilcox.test")
+```
+
+Are there any differences you notice between the arguments of the
+`wilcox.test()`{.r} function and the `t.test()`{.r} function? What do you think
+those differences mean?
+
+Now let's examine the function's output.
+
+```{r}
+wilcox.test(bill_length_mm ~ sex,
+            data = input_for_ttest)
+```
+
+Again, how does the output differ from the `t.test()`{.r} output?
+
+## Reformatting `wilcox.test()`{.r} Output With The *broom* Package
+
+The functions from the broom package also work with output from the
+`wilcox.test()`{.r} function. Let's see how the tidied output looks.
+
+```{r}
+wilcox.test(bill_length_mm ~ sex, data = input_for_ttest) |> 
+    broom::tidy()
+```
+
+How does this compare to the untidied results we get from the the
+`wilcox.test()`{.r} function? How do they compare to the tidied results we get
+from the `t.test()`{.r} function?
+
+# Binding Data Frames
+
+It would be very helpful if we had some means of concatenating the
+`t.test()`{.r} and `wilcox.test()`{.r} results so we could compare them
+side-by-side. We can accomplish this with the `bind_rows()`{.r} function from
+the dplyr package.
+
+The `bind_rows()`{.r} function concatenates all the rows from one data frame, to
+the bottom of another. As part of this operation, it looks for columns in both
+data frames that share the same names and variable types. It uses this
+information to line up the two data frames and merges them.
+
+Looking back at the tidied results from the `t.test()`{.r} and
+`wilcox.test()`{.r} functions we noted there were some similarities and
+differences.
+
+```{r}
+t.test(bill_length_mm ~ sex, data = input_for_ttest) |> 
+    broom::tidy()
+```
+
+```{r}
+wilcox.test(bill_length_mm ~ sex, data = input_for_ttest) |> 
+    broom::tidy()
+```
+
+Comparing the column names in these two tables, what do you think it will look
+like if we attempt to concatenate them by row?
+
+```{r}
+bind_rows(
+    
+)
+```
+
+There is also a `bind_cols()`{.r} function for cases where we want to
+concatenate data frames by column. The `bind_cols()`{.r} function requires that
+there are the same number of rows in all of the data frames we're trying to
+bind. It also assumes they're sorted in the same order, because it doesn't check
+any row values when merging.
+
+# Iteration
+
+In the previous sections, we performed statistical analyses and extracted
+results from individual tests. While this is certainly useful, we often want to
+apply tests to several metrics and aggregate the results.
+
+In this case, we'd like to repeat the same operation on different input data.
+While we could manually write out all of the tests for each input dataset, that
+opens us up to copy-and-paste errors, and ultimately isn't sustainable as the
+number of tests we want to run grows.
+
+We can accomplish this task through **iteration** (aka looping). Iteration is a
+concept that's fundamental to most, if not all programming languages.
+
+::: callout-note
+## Loops are notoriously slow in R
+
+That's right. Even though we're using loops here to learn about iteration, we
+generally want to avoid using loops in our day-to-day programming. There are
+various ways of avoiding loops, but those often involve more complex programming
+constructs. We'll get to those methods eventually.
+
+All of that being said, sometimes you just need to loop.
+:::
+
+We often want to repeat an operation on a series of input data ("iterate over
+the input data"). The easiest way to accomplish this type of iteration is with a
+**for loop**. Here's an example:
+
+```{r}
+for (counter in 1:10) {
+    print(paste("Processing count", counter))
+}
+```
+
+In this example, we're iterating over the values 1, 2, 3, 4, 5, 6, 7, 8, 9, 10.
+We keep track of which value we're on with a variable called "counter". The R
+code located between the curly braces gets executed every time the for loop
+iterates. Note, we arbitrarily chose the name "counter" for our tracking
+variable.
+
+So let's return to our penguin data. Above, we performed a T-test comparing the
+bill lengths for male and female Adelie penguins. What if we want to perform the
+same test for all three penguin species? We can do that with a for loop.
+
+Let's start by creating a simple for loop that iterates over the three penguin
+species and prints the species name. *Note: Let RStudio's autocomplete help you
+make for loops*.
+
+```{r}
+
+```
+
+Now let's combine this with the code we used previously. Here's the code we used
+to perform one T-test and tidy the results:
+
+```{r}
+input_for_ttest <- 
+    mod_penguins |> 
+           filter(!is.na(sex),
+                  species == "Adelie") |> 
+           select(sex, bill_length_mm)
+
+t.test(bill_length_mm ~ sex, data = input_for_ttest) |> broom::tidy()
+```
+
+Now, we need to insert this code into the for loop so it's run on a different
+penguin species every time the loop repeats.
+
+```{r}
+penguin_bill_data_by_species <- tibble()
+
+for (peng_species in unique(mod_penguins$species)) {
+    
+}
+```
+
+*Don't forget to save the output of each loop iteration to an external variable.*
+
+```{r}
+penguin_bill_data_by_species
+```
+
+
+# Multiple testing
+
+Now that we've learned a method for running statistical tests across many
+different variables in a dataset (e.g. genes from an RNA-Seq experiment), we
+need to start worrying about multiple testing.
+
+In R, was us the `p.adjust()`{.r} function to apply multiple testing corrections
+to vectors of p-values. Let's start by taking a look at its documentation.
+
+```{r}
+#| eval: false
+help("p.adjust")
+```
+
+We'll use the `p.adjust()`{.r} function to apply a Holm correction to our table
+of penguin species T-test results.
+
+First, a refresher on what our merged T-test data look like.
+
+```{r}
+penguin_bill_data_by_species
+```
+
+So let's apply the Holm correction to our p-values.
+
+```{r}
+penguin_bill_data_by_species |> 
+    select(species, p.value) |> 
+    arrange(p.value) |> 
+    mutate(Holm_p.value = p.adjust(p.value, method = "holm"))
+```
+
+How do the corrected p-values compare to the original?
+
+Let's also add a column for the Hommel corrected p-value.
+
+```{r}
+penguin_bill_data_by_species |> 
+    select(species, p.value) |> 
+    arrange(p.value) |> 
+    mutate(Hommel_p.value = p.adjust(p.value, method = "hommel"))
+```
+
+How do the Hommel corrected p-values compare?
+
+Even though this is a toy example where we're correcting data from three
+p-values, we could use the exact same code to apply these corrections to 30,000
+p-values.
+
+# Linear Regression
+
+Let's return to the bill length vs body mass comparison as a motivating example
+for linear regression.
+
+```{r}
+mod_penguins |> 
+    ggplot(aes(x = bill_length_mm, y = body_mass_g)) +
+    geom_point() +
+    geom_smooth(method = "lm", formula = y ~ x)
+```
+
+The `geom_smooth()`{.r} function can apply a linear regression to our data to
+aid with visualizing patterns.
+
+If we want to perform the regression on our own, we use the `lm()`{.r} function
+(aka "linear modeling"). Let's check out the help docs.
+
+```{r}
+#| eval: false
+help("lm")
+```
+
+Let's fit a linear model to the body mass vs bill length data:
+
+```{r}
+lm()
+```
+
+
+# Tidyverse cheatsheets
+
+These are great reference materials for each of the main Tidyverse packages,
+including ggplot2. For day-to-day programming, it's helpful to print some of
+these out and keep them at your workstation. These offer a great way to quickly
+look up the info you need to run a function.
+
+
+# R session information
+
+Here we report the version number for R and the package versions we used to
+perform the analyses in this document.
+
+```{r}
+sessionInfo()
+```
