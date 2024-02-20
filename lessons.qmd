@@ -37,6 +37,10 @@ be a little different, depending on your web browser.
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-03_Exploring-geom-functions-and-customizing-ggplots.qmd) (save to `LESSONS/` subdirectory)
 
+* Lesson 4: Statistical inference
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-04_Statistical-inference.qmd) (save to `LESSONS/` subdirectory)
+
 
 # Notes & Nibbles
 
