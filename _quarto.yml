@@ -19,6 +19,6 @@ website:
 
 format:
   html:
-    theme: sandstone
+    theme: zephyr
     css: styles.css
     toc: true
