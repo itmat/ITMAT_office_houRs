@@ -53,23 +53,20 @@ our figures to compare data between groups. Those types of approaches are
 excellent first steps when exploring a dataset.
 
 For example, let's create a plot comparing the distributions of male
-and female bill lengths and body masses, across all three penguin species.
+and female bill lengths across all three penguin species.
 
 ```{r}
 mod_penguins |> 
     filter(!is.na(sex)) |> 
     select(species, sex, bill_length_mm, body_mass_g) |> 
-    # Combine bill_length_mm and body_mass_g into two long columns ("metric" and
-    # "value"), so we can use them as faceting variables.
-    
     ggplot(aes(x = sex,
                y = value)) +
     
 ```
 
 These visuals suggest these penguin species exhibit sexual dimorphism across
-these two traits, but we haven't applied any sort of rigorous test. In this
-lesson, we'll add statistical analyses to our R skill set.
+bill length, but we haven't applied any sort of rigorous test. In this lesson,
+we'll add statistical analyses to our R skill set.
 
 # T-Test
 
