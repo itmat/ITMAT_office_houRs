@@ -53,7 +53,8 @@ mod_penguins |>
     select(species, sex, bill_length_mm) |> 
     ggplot(aes(x = sex,
                y = bill_length_mm)) +
-    
+    geom_boxplot() +
+    facet_wrap(facets = vars(species))
 ```
 
 These visuals suggest these penguin species exhibit sexual dimorphism across bill length, but we haven't applied any sort of rigorous test. In this lesson, we'll add statistical analyses to our R skill set.
@@ -68,7 +69,12 @@ First, we'll generate a histogram of these data so we can get a better view of t
 
 ```{r}
 mod_penguins |> 
-    
+    filter(species == "Adelie",
+           !is.na(sex)) |> 
+    select(species, bill_length_mm, sex) |> 
+    ggplot(aes(x = bill_length_mm)) +
+    geom_histogram() +
+    facet_grid(rows = vars(sex))
 ```
 
 The distributions are encouraging. They appear to be separated, roughly normal, and might have equal variances.
@@ -88,15 +94,17 @@ We can run this function with vector input or data frame input. We'll start by d
 # Create vector of female data
 female_data <-
     mod_penguins |> 
-    
-
+    filter(species == "Adelie",
+           sex == "female") |>
+    pull(bill_length_mm)
 # Create vector of male data
 male_data <-
     mod_penguins |> 
-    
-
+    filter(species == "Adelie",
+           sex == "male") |> 
+    pull(bill_length_mm)
 # Use both vectors as input to the t.test function
-t.test()
+t.test(female_data, male_data)
 ```
 
 What information can we pull from the output?
@@ -106,8 +114,11 @@ Now let's run the `t.test()`{.r} function with data frame input:
 ```{r}
 input_for_ttest <- 
     mod_penguins |> 
-
-t.test()
+    filter(species == "Adelie",
+           !is.na(sex)) |> 
+    select(sex, bill_length_mm)
+t.test(bill_length_mm ~ sex,
+       data = input_for_ttest)
 ```
 
 Are there any differences between the output from running `t.test()`{.r} in vector mode or in data frame mode?
@@ -213,7 +224,10 @@ Comparing the column names in these two tables, what do you think it will look l
 
 ```{r}
 bind_rows(
-    
+    t.test(bill_length_mm ~ sex, data = input_for_ttest) |> 
+        broom::tidy(),
+    wilcox.test(bill_length_mm ~ sex, data = input_for_ttest) |> 
+        broom::tidy()
 )
 ```
 
@@ -250,7 +264,17 @@ So let's return to our penguin data. Above, we performed a T-test comparing the 
 Let's start by creating a simple for loop that iterates over the three penguin species and prints the species name. *Note: Let RStudio's autocomplete help you make for loops*.
 
 ```{r}
-
+# Manual definition of species
+#penguin_species <- c("Adelie", "Gentoo", "Chinstrap")
+# Extract unique values from a column
+penguin_species <- 
+    unique(penguins$species)
+# Extract factor levels
+# penguin_species <- 
+#     levels(penguins$species)
+for (species in penguin_species) {
+    print(paste("Penguin species:", species))
+}
 ```
 
 Now let's combine this with the code we used previously. Here's the code we used to perform one T-test and tidy the results:
@@ -272,6 +296,20 @@ penguin_bill_data_by_species <- tibble()
 
 for (peng_species in unique(mod_penguins$species)) {
     
+    input_for_ttest <- 
+        mod_penguins |> 
+               filter(!is.na(sex),
+                      species == peng_species) |> 
+            select(sex, bill_length_mm)
+    
+    penguin_bill_data_by_species <- 
+        bind_rows(
+            penguin_bill_data_by_species,
+            t.test(bill_length_mm ~ sex, data = input_for_ttest) |>
+                broom::tidy() |> 
+                mutate(species = peng_species,
+                       .before = 1)
+        )
 }
 ```
 
@@ -330,7 +368,7 @@ Let's return to the bill length vs body mass comparison as a motivating example 
 
 ```{r}
 mod_penguins |> 
-    ggplot(aes(x = bill_length_mm, y = body_mass_g)) +
+    ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
     geom_point() +
     geom_smooth(method = "lm", formula = y ~ x)
 ```
@@ -347,7 +385,23 @@ help("lm")
 Let's fit a linear model to the body mass vs bill length data:
 
 ```{r}
-lm()
+lm(formula = body_mass_g ~ bill_length_mm,
+   data = mod_penguins) |> 
+    summary() |> 
+    broom::tidy()
+```
+
+```{r}
+lm(formula = body_mass_g ~ species + bill_length_mm + species:bill_length_mm,
+   data = mod_penguins) |> 
+    summary() |> 
+    broom::tidy()
+```
+
+```{r}
+lm(formula = body_mass_g ~ bill_length_mm,
+   data = mod_penguins) |> 
+    broom::tidy()
 ```
 
 # Tidyverse cheatsheets
