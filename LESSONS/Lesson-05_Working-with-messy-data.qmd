@@ -7,7 +7,7 @@ format:
         embed-resources: true
         number-sections: true
         toc: true
-#editor: visual
+editor: visual
 ---
 
 # Prepare the R environment
