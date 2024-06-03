@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-16">
+<meta name="dcterms.date" content="2024-04-16">
 
-<title>ITMAT office houRs - Named and positional arguments</title>
+<title>ITMAT office houRs - Lesson 5: Working with messy data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -1662,7 +1662,7 @@ async function fuseSearch(query, fuse, fuseOptions) {
   return results;
 }
 </script>
-<meta name="quarto:offset" content="../">
+<meta name="quarto:offset" content="../../">
 <script>const sectionChanged = new CustomEvent("quarto-sectionChanged", {
   detail: {},
   bubbles: true,
@@ -4703,7 +4703,7 @@ vertical-align: -.125em;
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">ITMAT office houRs</span>
     </a>
   </div>
@@ -4714,11 +4714,11 @@ vertical-align: -.125em;
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Overview</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../lessons.html"> 
+    <a class="nav-link" href="../../lessons.html"> 
 <span class="menu-text">Lessons</span></a>
   </li>  
 </ul>
@@ -4733,14 +4733,37 @@ vertical-align: -.125em;
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#prepare-the-r-environment" id="toc-prepare-the-r-environment" class="nav-link active" data-scroll-target="#prepare-the-r-environment"><span class="header-section-number">1</span> Prepare the R environment</a></li>
+  <li><a href="#reading-the-raw-palmer-penguins-data" id="toc-reading-the-raw-palmer-penguins-data" class="nav-link" data-scroll-target="#reading-the-raw-palmer-penguins-data"><span class="header-section-number">2</span> Reading the raw Palmer Penguins Data</a></li>
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning"><span class="header-section-number">3</span> Data cleaning</a>
+  <ul class="collapse">
+  <li><a href="#column-names" id="toc-column-names" class="nav-link" data-scroll-target="#column-names"><span class="header-section-number">3.1</span> Column names</a>
+  <ul class="collapse">
+  <li><a href="#the-rename-function" id="toc-the-rename-function" class="nav-link" data-scroll-target="#the-rename-function"><span class="header-section-number">3.1.1</span> The <code class="sourceCode r"><span class="fu">rename</span>()</code> function</a></li>
+  <li><a href="#the-janitor-package" id="toc-the-janitor-package" class="nav-link" data-scroll-target="#the-janitor-package"><span class="header-section-number">3.1.2</span> The <em>janitor</em> package</a></li>
+  </ul></li>
+  <li><a href="#column-contents" id="toc-column-contents" class="nav-link" data-scroll-target="#column-contents"><span class="header-section-number">3.2</span> Column contents</a>
+  <ul class="collapse">
+  <li><a href="#the-stringr-package" id="toc-the-stringr-package" class="nav-link" data-scroll-target="#the-stringr-package"><span class="header-section-number">3.2.1</span> The <em>stringr</em> package</a></li>
+  <li><a href="#the-lubridate-package" id="toc-the-lubridate-package" class="nav-link" data-scroll-target="#the-lubridate-package"><span class="header-section-number">3.2.2</span> The <em>lubridate</em> package</a></li>
+  <li><a href="#the-across-function" id="toc-the-across-function" class="nav-link" data-scroll-target="#the-across-function"><span class="header-section-number">3.2.3</span> The <code class="sourceCode r"><span class="fu">across</span>()</code> function</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#review" id="toc-review" class="nav-link" data-scroll-target="#review"><span class="header-section-number">4</span> Review</a></li>
+  <li><a href="#r-session-information" id="toc-r-session-information" class="nav-link" data-scroll-target="#r-session-information"><span class="header-section-number">5</span> R session information</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Named and positional arguments</h1>
+<h1 class="title">Lesson 5: Working with messy data</h1>
 </div>
 
 
@@ -4751,7 +4774,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 16, 2023</p>
+      <p class="date">April 16, 2024</p>
     </div>
   </div>
   
@@ -4763,76 +4786,723 @@ vertical-align: -.125em;
 </header>
 
 
+<section id="prepare-the-r-environment" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Prepare the R environment</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Consider the following code we use to create a scatterplot from the penguin data:</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> penguins,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
 </div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data:image/png;base64,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" class="img-fluid quarto-figure quarto-figure-center figure-img" width="288"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>We use the <code>data</code> and <code>mapping</code> arguments in the <code class="sourceCode r"><span class="fu">ggplot</span>()</code> function to define the input data and the aesthetic mappings, respectively. When constructing this code, we explicitly write the names of arguments (e.g. <code>data = ...</code>). This is called using <strong>named arguments</strong>.</p>
-<p>Compare this to the following code, which generates the exact same scatterplot:</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
 </div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data:image/png;base64,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" class="img-fluid quarto-figure quarto-figure-center figure-img" width="288"></p>
-</figure>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
 </div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
 </div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
 </div>
-<p>Why do you think this works? <em>Hint: look at the ‘Usage’ section on the help page for <code class="sourceCode r"><span class="fu">ggplot</span>()</code></em></p>
-<p>When we don’t provide the names of arguments, R uses their positions in the function call to identify which values to assign to which argument. This is called using <strong>positional arguments</strong>. You can find the order of arguments that R expects for a function by referring to the help documentation, or by using the <code class="sourceCode r"><span class="fu">args</span>()</code> function.</p>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In addition to the <em>tidyverse</em> packages we loaded above, we’ll also need the <em>janitor</em> package. The <em>janitor</em> package contains functions to help us “clean” data after we’ve read it into R. Since we haven’t used this package yet, we’ll likely need to install it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">args</span>(ggplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;janitor&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The ‘eval’ cell option
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you’re looking at the code in the Quarto document for this lesson (instead of the HTML version), you’ll notice the <code class="quarto">#| eval: false</code> at the top of the code chunk, or “cell”. This tells quarto to skip this code cell (i.e. it will not <strong>eval</strong>uate the code cell). We only want to install the <em>janitor</em> package, so we don’t need to re-run the code cell whenever we render this quarto document.</p>
+</div>
+</div>
+<p>Lastly, we need to load the <em>janitor</em> package before we can use its functions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;janitor&#39;</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    chisq.test, fisher.test</code></pre>
+</div>
+</div>
+</section>
+<section id="reading-the-raw-palmer-penguins-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Reading the raw Palmer Penguins Data</h1>
+<p>We’ve worked with the Palmer Penguins dataset in several previous lessons. Here is a quick reminder of what this dataset looks like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This data table and its contents are formatted to work well with R’s conventions for visualization and analysis (as we’ve seen). However, original version of these data, as collected by the authors of the Palmer Penguins study, looked a little different. In this lesson, we will read the raw penguin data into R and work to transform it into the cleaned version we see in the <code class="sourceCode r">penguins</code> table.</p>
+<p>The <em>palmerpenguins</em> package includes a csv file of this raw penguins data table. We can use the <code class="sourceCode r"><span class="fu">path_to_file</span>()</code> to find the location of this file on our computers:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>palmerpenguins<span class="sc">::</span><span class="fu">path_to_file</span>(<span class="st">&quot;penguins_raw.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>function (data = NULL, mapping = aes(), ..., environment = parent.frame()) 
-NULL</code></pre>
+<pre><code>[1] &quot;C:/Users/nickopotamus/AppData/Local/R/win-library/4.4/palmerpenguins/extdata/penguins_raw.csv&quot;</code></pre>
 </div>
 </div>
-<p>Now that we’ve seen the order of the arguments the <code class="sourceCode r"><span class="fu">ggplot</span>()</code> function expects, let’s re-examine the second block of code we used to create the scatterplot.</p>
+<p>In Lesson 2, we learned about the <code class="sourceCode r"><span class="fu">read_csv</span>()</code> function from the <em>readr</em> package. Here we will use this function to read the contents of this raw penguin data table into R. Don’t forget to refer to the help docs for <code class="sourceCode r"><span class="fu">read_csv</span>()</code> if you need a refresher on how it works.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(penguins,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>raw_penguins_data <span class="ot">&lt;-</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(palmerpenguins<span class="sc">::</span><span class="fu">path_to_file</span>(<span class="st">&quot;penguins_raw.csv&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 344 Columns: 17
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (9): studyName, Species, Region, Island, Stage, Individual ID, Clutch C...
+dbl  (7): Sample Number, Culmen Length (mm), Culmen Depth (mm), Flipper Leng...
+date (1): Date Egg
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<p>The first argument the <code class="sourceCode r"><span class="fu">ggplot</span>()</code> function expects in the <code>data</code> argument. In this code, <code>penguins</code> is the first argument we provide. Since we didn’t specify an argument name, R automatically assigns it to the <code>data</code> argument. Similarly, the aesthetic mapping (<code class="sourceCode r"><span class="fu">aes</span>(...)</code>) is the second argument we provide. Again, we didn’t specify an argument name so R automatically assigns it to <code>mapping</code>, the next unused argument in list of arguments returned by the <code class="sourceCode r"><span class="fu">args</span>(ggplot)</code>.</p>
-<p>Both argument conventions offer advantages. When we use named arguments, we can provide them in any order.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> flipper_length_mm),</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> penguins) <span class="sc">+</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Positional arguments save us some typing and make use more efficient programmers, particularly for functions that we re-use often in our code. For example, since the first argument for most <em>dplyr</em> functions is the input data, we tend define the data using a positional argument.</p>
-<p>We can also use a mix of named and positional arguments in the same function call:</p>
+<p>Functions from the <em>readr</em> package produce a lot of output describing the files they read. Looking through these messages you can find information on the dimensions of this data table, as well as the guesses the <code class="sourceCode r"><span class="fu">read_csv</span>()</code> function made about the contents of each data column. Think about how this information compares to the structure of the cleaned penguins data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> flipper_length_mm),</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> penguins) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [344 × 8] (S3: tbl_df/tbl/data.frame)
+ $ species          : Factor w/ 3 levels &quot;Adelie&quot;,&quot;Chinstrap&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ island           : Factor w/ 3 levels &quot;Biscoe&quot;,&quot;Dream&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+ $ bill_length_mm   : num [1:344] 39.1 39.5 40.3 NA 36.7 39.3 38.9 39.2 34.1 42 ...
+ $ bill_depth_mm    : num [1:344] 18.7 17.4 18 NA 19.3 20.6 17.8 19.6 18.1 20.2 ...
+ $ flipper_length_mm: int [1:344] 181 186 195 NA 193 190 181 195 193 190 ...
+ $ body_mass_g      : int [1:344] 3750 3800 3250 NA 3450 3650 3625 4675 3475 4250 ...
+ $ sex              : Factor w/ 2 levels &quot;female&quot;,&quot;male&quot;: 2 1 1 NA 1 2 1 2 NA NA ...
+ $ year             : int [1:344] 2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...</code></pre>
 </div>
-<p>Even though the mapping <code class="sourceCode r"><span class="fu">aes</span>()</code> is the first positional argument R assigns it to the <code>mapping</code> argument. This is because we’ve explicitly defined the data as a named argument elsewhere in the function call. When R assigns positional arguments, it first assigns all of the named arguments, then assigns positional arguments to whatever is left. In the above example, when R goes to assign the aesthetics it skips the <code>data</code> argument, because we define <code>data</code> using a named argument, and assigns <code class="sourceCode r"><span class="fu">aes</span>(...)</code> to the next <code>mapping</code>, which is the next un-used argument after <code>data</code>.</p>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The <code class="sourceCode r"><span class="fu">str</span>()</code> function
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code class="sourceCode r"><span class="fu">str</span>()</code> provides a compact, general overview of the structure of most R data structures. It’s useful when you need to quickly familiarize yourself with a data structure.</p>
+</div>
+</div>
+<p>Based on any differences you note between the raw and cleaned penguin data, think about the types of changes you’ll need to make to the raw data to get it to look like the cleaned data.</p>
+</section>
+<section id="data-cleaning" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data cleaning</h1>
+<section id="column-names" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="column-names"><span class="header-section-number">3.1</span> Column names</h2>
+<p>One of the first differences between the raw and cleaned data you may notice is that they have different numbers of columns, with different names. Let’s start by using the <code class="sourceCode r"><span class="fu">colnames</span>()</code> function.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(raw_penguins_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] &quot;studyName&quot;           &quot;Sample Number&quot;       &quot;Species&quot;            
+ [4] &quot;Region&quot;              &quot;Island&quot;              &quot;Stage&quot;              
+ [7] &quot;Individual ID&quot;       &quot;Clutch Completion&quot;   &quot;Date Egg&quot;           
+[10] &quot;Culmen Length (mm)&quot;  &quot;Culmen Depth (mm)&quot;   &quot;Flipper Length (mm)&quot;
+[13] &quot;Body Mass (g)&quot;       &quot;Sex&quot;                 &quot;Delta 15 N (o/oo)&quot;  
+[16] &quot;Delta 13 C (o/oo)&quot;   &quot;Comments&quot;           </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;species&quot;           &quot;island&quot;            &quot;bill_length_mm&quot;   
+[4] &quot;bill_depth_mm&quot;     &quot;flipper_length_mm&quot; &quot;body_mass_g&quot;      
+[7] &quot;sex&quot;               &quot;year&quot;             </code></pre>
+</div>
+</div>
+<p>Which columns in the raw data appear to correspond to those in the cleaned data? How do the names of the corresponding column different between the two tables?</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Column naming contentions in R
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In R, column names have the same naming requirements as variables:</p>
+<ul>
+<li>May only contains letters, numbers, underscores, and period. No spaces.</li>
+<li>Cannot start with a number.</li>
+</ul>
+</div>
+</div>
+<p>Do any of the column names in the raw data table violate R’s naming conventions? What about the names of the columns in the cleaned data table?</p>
+<p>Let’s examine the raw data table’s contents and column names. What do you notice about names of columns that violate R’s naming conventions?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_penguins_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 17
+  studyName `Sample Number` Species          Region Island Stage `Individual ID`
+  &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;          
+1 PAL0708                 1 Adelie Penguin … Anvers Torge… Adul… N1A1           
+2 PAL0708                 2 Adelie Penguin … Anvers Torge… Adul… N1A2           
+3 PAL0708                 3 Adelie Penguin … Anvers Torge… Adul… N2A1           
+4 PAL0708                 4 Adelie Penguin … Anvers Torge… Adul… N2A2           
+5 PAL0708                 5 Adelie Penguin … Anvers Torge… Adul… N3A1           
+6 PAL0708                 6 Adelie Penguin … Anvers Torge… Adul… N3A2           
+# ℹ 10 more variables: `Clutch Completion` &lt;chr&gt;, `Date Egg` &lt;date&gt;,
+#   `Culmen Length (mm)` &lt;dbl&gt;, `Culmen Depth (mm)` &lt;dbl&gt;,
+#   `Flipper Length (mm)` &lt;dbl&gt;, `Body Mass (g)` &lt;dbl&gt;, Sex &lt;chr&gt;,
+#   `Delta 15 N (o/oo)` &lt;dbl&gt;, `Delta 13 C (o/oo)` &lt;dbl&gt;, Comments &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>We can use backticks to represent column names that violate R’s variable naming conventions. This is useful when we’re reading data from software that doesn’t follow the same conventions (e.g. excel spreadsheets, hand-made CSV files). While backticks give us greater flexibility in name columns, they can be unwieldy.</p>
+<p>See what happens if we try to select the <code>Sample Number</code> column and forget the backticks.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>raw_penguins_data <span class="sc">|&gt;</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Sample Number)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error: &lt;text&gt;:2:19: unexpected symbol
+1: raw_penguins_data |&gt; 
+2:     select(Sample Number
+                     ^</code></pre>
+</div>
+</div>
+<p>If there are columns we’ll need to refer to frequently in our code, it can make our lives easier to simlify their names and make sure they follow R’s naming conventions. In the next two sections, we’ll learn about two methods for modify column names.</p>
+<section id="the-rename-function" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="the-rename-function"><span class="header-section-number">3.1.1</span> The <code class="sourceCode r"><span class="fu">rename</span>()</code> function</h3>
+<p>The <code class="sourceCode r"><span class="fu">rename</span>()</code> function from the <em>dplyr</em> package allows us to rename individual columns using standard tidyverse conventions. In this example code, we rename the <code>Sample Number</code> column to remove the space.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>raw_penguins_data <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Sample_Number =</span> <span class="st">`</span><span class="at">Sample Number</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 17
+   studyName Sample_Number Species           Region Island Stage `Individual ID`
+   &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;             &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;          
+ 1 PAL0708               1 Adelie Penguin (… Anvers Torge… Adul… N1A1           
+ 2 PAL0708               2 Adelie Penguin (… Anvers Torge… Adul… N1A2           
+ 3 PAL0708               3 Adelie Penguin (… Anvers Torge… Adul… N2A1           
+ 4 PAL0708               4 Adelie Penguin (… Anvers Torge… Adul… N2A2           
+ 5 PAL0708               5 Adelie Penguin (… Anvers Torge… Adul… N3A1           
+ 6 PAL0708               6 Adelie Penguin (… Anvers Torge… Adul… N3A2           
+ 7 PAL0708               7 Adelie Penguin (… Anvers Torge… Adul… N4A1           
+ 8 PAL0708               8 Adelie Penguin (… Anvers Torge… Adul… N4A2           
+ 9 PAL0708               9 Adelie Penguin (… Anvers Torge… Adul… N5A1           
+10 PAL0708              10 Adelie Penguin (… Anvers Torge… Adul… N5A2           
+# ℹ 334 more rows
+# ℹ 10 more variables: `Clutch Completion` &lt;chr&gt;, `Date Egg` &lt;date&gt;,
+#   `Culmen Length (mm)` &lt;dbl&gt;, `Culmen Depth (mm)` &lt;dbl&gt;,
+#   `Flipper Length (mm)` &lt;dbl&gt;, `Body Mass (g)` &lt;dbl&gt;, Sex &lt;chr&gt;,
+#   `Delta 15 N (o/oo)` &lt;dbl&gt;, `Delta 13 C (o/oo)` &lt;dbl&gt;, Comments &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>From this code cell, you can see the general usage of the <code class="sourceCode r"><span class="fu">rename</span>()</code> function: <code class="sourceCode r"><span class="fu">rename</span>(input_data, <span class="at">new_column_name =</span> old_column_name)</code>. Note that we needed to enclose the original column name inside backticks, because it did not follow R’s naming conventions.</p>
+<p>We can change the names of multiple columns in the same <code class="sourceCode r"><span class="fu">rename</span>()</code> function by separating each rename operation with a comma. Modify the code below so it also changes the name of the <code>Culmen Length (mm)</code> column so it matches R’s naming conventions, in addition to renaming the <code>Sample Number</code> column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>raw_penguins_data <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Sample_Number =</span> <span class="st">`</span><span class="at">Sample Number</span><span class="st">`</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">bill_length_mm =</span> <span class="st">`</span><span class="at">Culmen Length (mm)</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 17
+   studyName Sample_Number Species           Region Island Stage `Individual ID`
+   &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;             &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;          
+ 1 PAL0708               1 Adelie Penguin (… Anvers Torge… Adul… N1A1           
+ 2 PAL0708               2 Adelie Penguin (… Anvers Torge… Adul… N1A2           
+ 3 PAL0708               3 Adelie Penguin (… Anvers Torge… Adul… N2A1           
+ 4 PAL0708               4 Adelie Penguin (… Anvers Torge… Adul… N2A2           
+ 5 PAL0708               5 Adelie Penguin (… Anvers Torge… Adul… N3A1           
+ 6 PAL0708               6 Adelie Penguin (… Anvers Torge… Adul… N3A2           
+ 7 PAL0708               7 Adelie Penguin (… Anvers Torge… Adul… N4A1           
+ 8 PAL0708               8 Adelie Penguin (… Anvers Torge… Adul… N4A2           
+ 9 PAL0708               9 Adelie Penguin (… Anvers Torge… Adul… N5A1           
+10 PAL0708              10 Adelie Penguin (… Anvers Torge… Adul… N5A2           
+# ℹ 334 more rows
+# ℹ 10 more variables: `Clutch Completion` &lt;chr&gt;, `Date Egg` &lt;date&gt;,
+#   bill_length_mm &lt;dbl&gt;, `Culmen Depth (mm)` &lt;dbl&gt;,
+#   `Flipper Length (mm)` &lt;dbl&gt;, `Body Mass (g)` &lt;dbl&gt;, Sex &lt;chr&gt;,
+#   `Delta 15 N (o/oo)` &lt;dbl&gt;, `Delta 13 C (o/oo)` &lt;dbl&gt;, Comments &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>While we can use the <code class="sourceCode r"><span class="fu">rename</span>()</code> function to change the names of multiple columns in a data frame, this can be laborious if we need to correct many (or most) columns.</p>
+</section>
+<section id="the-janitor-package" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="the-janitor-package"><span class="header-section-number">3.1.2</span> The <em>janitor</em> package</h3>
+<p>As the name implies, the <em>janitor</em> package includes several functions that can help us clean our data for use in R. Specifically, we’ll be using the <code class="sourceCode r"><span class="fu">clean_names</span>()</code> function. Run the following code cell to see how it affects our raw penguin data table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>raw_penguins_data <span class="sc">|&gt;</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">clean_names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 17
+   study_name sample_number species            region island stage individual_id
+   &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;        
+ 1 PAL0708                1 Adelie Penguin (P… Anvers Torge… Adul… N1A1         
+ 2 PAL0708                2 Adelie Penguin (P… Anvers Torge… Adul… N1A2         
+ 3 PAL0708                3 Adelie Penguin (P… Anvers Torge… Adul… N2A1         
+ 4 PAL0708                4 Adelie Penguin (P… Anvers Torge… Adul… N2A2         
+ 5 PAL0708                5 Adelie Penguin (P… Anvers Torge… Adul… N3A1         
+ 6 PAL0708                6 Adelie Penguin (P… Anvers Torge… Adul… N3A2         
+ 7 PAL0708                7 Adelie Penguin (P… Anvers Torge… Adul… N4A1         
+ 8 PAL0708                8 Adelie Penguin (P… Anvers Torge… Adul… N4A2         
+ 9 PAL0708                9 Adelie Penguin (P… Anvers Torge… Adul… N5A1         
+10 PAL0708               10 Adelie Penguin (P… Anvers Torge… Adul… N5A2         
+# ℹ 334 more rows
+# ℹ 10 more variables: clutch_completion &lt;chr&gt;, date_egg &lt;date&gt;,
+#   culmen_length_mm &lt;dbl&gt;, culmen_depth_mm &lt;dbl&gt;, flipper_length_mm &lt;dbl&gt;,
+#   body_mass_g &lt;dbl&gt;, sex &lt;chr&gt;, delta_15_n_o_oo &lt;dbl&gt;, delta_13_c_o_oo &lt;dbl&gt;,
+#   comments &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>How have the “cleaned” column names changed? How do they compare to column names in the cleaned penguin data table?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+1 Adelie  Torgersen           39.1          18.7               181        3750
+2 Adelie  Torgersen           39.5          17.4               186        3800
+3 Adelie  Torgersen           40.3          18                 195        3250
+4 Adelie  Torgersen           NA            NA                  NA          NA
+5 Adelie  Torgersen           36.7          19.3               193        3450
+6 Adelie  Torgersen           39.3          20.6               190        3650
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>Use the <code class="sourceCode r">clean_names</code> function in combination with the <code class="sourceCode r"><span class="fu">select</span>()</code> function collect the columns from the raw data table that contain the same information as the columns in the clean data table. Recall, the <code class="sourceCode r"><span class="fu">select</span>()</code> allows us to grab or discard columns from a data frame by names (refer to the docs for examples).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="ot">&lt;-</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    raw_penguins_data <span class="sc">|&gt;</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(species, island, culmen_length_mm, culmen_depth_mm, flipper_length_mm,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>           body_mass_g, sex, date_egg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Lastly, use the <code class="sourceCode r"><span class="fu">rename</span>()</code> function to change the culmen length/depth column names to “bill” length/depth. This matches the column names in the cleaned data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="ot">&lt;-</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">bill_length_mm =</span> culmen_length_mm,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">bill_depth_mm =</span> culmen_depth_mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="column-contents" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="column-contents"><span class="header-section-number">3.2</span> Column contents</h2>
+<p>While our partially cleaned data frame has a similar column structure compared to the full cleaned data frame, the contents of the columns are still different.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(partially_cleaned_penguin_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  species      island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;chr&gt;        &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;
+1 Adelie Peng… Torge…           39.1          18.7               181        3750
+2 Adelie Peng… Torge…           39.5          17.4               186        3800
+3 Adelie Peng… Torge…           40.3          18                 195        3250
+4 Adelie Peng… Torge…           NA            NA                  NA          NA
+5 Adelie Peng… Torge…           36.7          19.3               193        3450
+6 Adelie Peng… Torge…           39.3          20.6               190        3650
+# ℹ 2 more variables: sex &lt;chr&gt;, date_egg &lt;date&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+1 Adelie  Torgersen           39.1          18.7               181        3750
+2 Adelie  Torgersen           39.5          17.4               186        3800
+3 Adelie  Torgersen           40.3          18                 195        3250
+4 Adelie  Torgersen           NA            NA                  NA          NA
+5 Adelie  Torgersen           36.7          19.3               193        3450
+6 Adelie  Torgersen           39.3          20.6               190        3650
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>What is differences do you notice between the contents of these two data tables? Pay special attention to the variable types in each column.</p>
+<p>Recall from previous lessons we can use the <code class="sourceCode r"><span class="fu">mutate</span>()</code> function from the <em>dplyr</em> function to create new columns or modify the contents of existing columns. In the following sections we’ll learn about several packages and functions we can use in combination with <code class="sourceCode r"><span class="fu">mutate</span>()</code> to finish cleaning the penguin data.</p>
+<section id="the-stringr-package" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="the-stringr-package"><span class="header-section-number">3.2.1</span> The <em>stringr</em> package</h3>
+<p>Pay special attention to the contents of the <code>species</code> and <code>sex</code> columns. The <code>species</code> column in the partially cleaned data is quite a bit longer than the column in the full cleaned data. Specifically, it contains the word “Penguin”, as well the as the full genus and species name for each penguin. While the <code>sex</code> column contains the same information in the partially and fully cleaned data, the values in the partially cleaned data are all uppercase while those in the fully cleaned data are all lowercase.</p>
+<p>Since the data in these two columns are character strings, we can use the <em>stringr</em> package. This package contains several functions designed to easily modify and manipulate character strings. For details on all functions in the <em>stringr</em> package, refer to the documentation or the Posit <a href="https://rstudio.github.io/cheatsheets/html/strings.html">cheatsheet</a>.</p>
+<p>Let’s start by fixing the case discrepancy in the <code>sex</code> column. The <code class="sourceCode r"><span class="fu">str_to_lower</span>()</code> function from the <em>stringr</em> package takes a character string and converts all the letters in the string to lowercase.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_lower</span>(<span class="fu">c</span>(<span class="st">&quot;FEMALE&quot;</span>, <span class="st">&quot;Female&quot;</span>, <span class="st">&quot;FeMaLe&quot;</span>, <span class="st">&quot;F3MALE&quot;</span>, <span class="st">&quot;Female!&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;female&quot;  &quot;female&quot;  &quot;female&quot;  &quot;f3male&quot;  &quot;female!&quot;</code></pre>
+</div>
+</div>
+<p>Here we’ll use the <code class="sourceCode r"><span class="fu">str_to_lower</span>()</code> function inside the <code class="sourceCode r"><span class="fu">mutate</span>()</code> function to change the contents of the <code>sex</code> column to lowercase.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="ot">&lt;-</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">str_to_lower</span>(sex))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s consider the contents of the species column. The fully cleaned penguin data contains just the common species name (Adelie, Chinstrap, Gentoo), while the partially cleaned data contains the common species name, the word “Penguin”, and the full genus and species names. Let’s examine all the unique values in the species column</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  species                                  
+  &lt;chr&gt;                                    
+1 Adelie Penguin (Pygoscelis adeliae)      
+2 Gentoo penguin (Pygoscelis papua)        
+3 Chinstrap penguin (Pygoscelis antarctica)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  species  
+  &lt;fct&gt;    
+1 Adelie   
+2 Gentoo   
+3 Chinstrap</code></pre>
+</div>
+</div>
+<p>Why might it be preferable to use just the common name? Think about what it would be like to use the species column to filter the data just for Gentoo penguins, or what figure legends would look like if different traces were colored by species.</p>
+<p>Here we’ll use the <code class="sourceCode r"><span class="fu">str_remove</span>()</code> function to remove the portion of the strings in the species column that we don’t want.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="at">string =</span> <span class="st">&quot;Adelie Penguin (Pygoscelis adeliae)&quot;</span>,</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot; Penguin.+&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;Adelie&quot;</code></pre>
+</div>
+</div>
+<p>The <code>pattern</code> argument in this function defines the portion of the string that we want to remove. This pattern is defined using what is called a “regular expression”.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Regular expressions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Regular expressions are a special kind of grammar that lets us loosely define a pattern in a character string that we’re looking for. While we’re not going to delve too deeply into writing regular expressions, here are some examples to help give you some intuition for how they work.</p>
+<p>In their simplest forms, these patterns match portions of a string exactly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="st">&quot;Adelie Penguinssssss&quot;</span>,</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot;Penguin&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;Adelie ssssss&quot;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="st">&quot;Adelie Penguinssssss&quot;</span>,</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot; &quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;AdeliePenguinssssss&quot;</code></pre>
+</div>
+</div>
+<p>There are special character combinations we can use in a regular expression to make a pattern more open-ended. For example, the period (“.”) will match any single character.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="st">&quot;Adelie Penguinssssss&quot;</span>,</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot;.&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;delie Penguinssssss&quot;</code></pre>
+</div>
+</div>
+<p>Multiple periods will match multiple characters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="st">&quot;Adelie Penguinssssss&quot;</span>,</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot;...&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;lie Penguinssssss&quot;</code></pre>
+</div>
+</div>
+<p>Lastly, we can use the plus sign (“+”) in combination with another character to match repeated occurrences of that character.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="st">&quot;Adelie Penguinssssss&quot;</span>,</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot;s+&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;Adelie Penguin&quot;</code></pre>
+</div>
+</div>
+<p>If we combine the period and plus signs, we match multiple occurrences of any combination of characters (i.e. it matches everything).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="st">&quot;Adelie Penguinssssss&quot;</span>,</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot;.+&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;&quot;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<p>Let’s review the regular expression we used above to remove everything from the species, except for the common name.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove</span>(<span class="at">string =</span> <span class="st">&quot;Adelie Penguin (Pygoscelis adeliae)&quot;</span>,</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pattern =</span> <span class="st">&quot; Penguin.+&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;Adelie&quot;</code></pre>
+</div>
+</div>
+<p>The pattern starts with ” Penguin”, so it will match any portion of a string where a space is followed by the word “Penguin”. The “.+” matches any combination of characters of any length. So taken together, this pattern matches a space, followed by the word “Penguin”, followed by any combination of characters of any length.</p>
+<p>Let’s use the <code class="sourceCode r"><span class="fu">str_remove</span>()</code> function with the <code class="sourceCode r"><span class="fu">mutate</span>()</code> function to reduce the contents of the <code>species</code> column to just the common species name.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">str_remove</span>(<span class="at">string =</span> species,</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">pattern =</span> <span class="st">&quot; Penguin.+&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  species                                  
+  &lt;chr&gt;                                    
+1 Adelie                                   
+2 Gentoo penguin (Pygoscelis papua)        
+3 Chinstrap penguin (Pygoscelis antarctica)</code></pre>
+</div>
+</div>
+<p>Why weren’t all of the species entries trimmed? How could we modify the regular expression to match them all?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">str_remove</span>(<span class="at">string =</span> species,</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">pattern =</span> <span class="st">&quot; .+&quot;</span>)</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>           ) <span class="sc">|&gt;</span> </span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  species  
+  &lt;chr&gt;    
+1 Adelie   
+2 Gentoo   
+3 Chinstrap</code></pre>
+</div>
+</div>
+<p>Now save the updated contents of the species column.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="ot">&lt;-</span> </span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>    partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">str_remove</span>(<span class="at">string =</span> species,</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">pattern =</span> <span class="st">&quot; .+&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="the-lubridate-package" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="the-lubridate-package"><span class="header-section-number">3.2.2</span> The <em>lubridate</em> package</h3>
+<p>The partially cleaned data contains a <code>date_egg</code> column with the full calendar date on which the researhcers first observed one egg in each study nest. The cleaned penguin data contains a <code>year</code> column that only contains the year. While we could use <em>stringr</em> functions to try to extract the year component from each entry, we have a better option since this column is of date type.</p>
+<p>The <em>lubridate</em> package contains a series of functions designed to make date/time objects easier to manage and manipulate. You can refer to the full <em>lubridate</em> documentation or the <a href="https://rstudio.github.io/cheatsheets/html/lubridate.html">cheatsheet</a> provided by Posit for details on the various functions in this package.</p>
+<p>Here, we will use the <code class="sourceCode r"><span class="fu">year</span>()</code> function to extract just the year portion of a date object. Here’s an example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ymd</span>(<span class="st">&quot;2007-11-11&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;2007-11-11&quot;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">year</span>(<span class="fu">ymd</span>(<span class="st">&quot;2007-11-11&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2007</code></pre>
+</div>
+</div>
+<p>Now use the <code class="sourceCode r"><span class="fu">year</span>()</code> function in combination with the <code class="sourceCode r"><span class="fu">mutate</span>()</code> function to create a new <code>year</code> column with just the year information from each study nest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="ot">&lt;-</span> </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>    partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(date_egg))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="the-across-function" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="the-across-function"><span class="header-section-number">3.2.3</span> The <code class="sourceCode r"><span class="fu">across</span>()</code> function</h3>
+<p>We are very close to producing a fully cleaned version of the penguin dataset. Comparing the displays of these two data tables, can you identify the remaining differences between them?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(partially_cleaned_penguin_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 9
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;
+1 Adelie  Torgersen           39.1          18.7               181        3750
+2 Adelie  Torgersen           39.5          17.4               186        3800
+3 Adelie  Torgersen           40.3          18                 195        3250
+4 Adelie  Torgersen           NA            NA                  NA          NA
+5 Adelie  Torgersen           36.7          19.3               193        3450
+6 Adelie  Torgersen           39.3          20.6               190        3650
+# ℹ 3 more variables: sex &lt;chr&gt;, date_egg &lt;date&gt;, year &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+1 Adelie  Torgersen           39.1          18.7               181        3750
+2 Adelie  Torgersen           39.5          17.4               186        3800
+3 Adelie  Torgersen           40.3          18                 195        3250
+4 Adelie  Torgersen           NA            NA                  NA          NA
+5 Adelie  Torgersen           36.7          19.3               193        3450
+6 Adelie  Torgersen           39.3          20.6               190        3650
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>The <code>species</code>, <code>island</code>, and <code>sex</code> columns in the fully cleaned data are factors, while in the partially cleaned data they are character strings. Similarly, the <code>flipper_length_mm</code> and <code>year</code> columns in the fully cleaned data are integers, while in the partially cleaned data they are doubles.</p>
+<p>We can use the <code class="sourceCode r"><span class="fu">mutate</span>()</code> function in combination with the <code class="sourceCode r"><span class="fu">as.factor</span>()</code> and <code class="sourceCode r"><span class="fu">as.integer</span>()</code> functions to correct these remaining differences.</p>
+<p>Use these functions to convert the contents of the <code>species</code> and <code>year</code> columns to factors and integers, respectively.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">as.factor</span>(species),</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 9
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# ℹ 334 more rows
+# ℹ 3 more variables: sex &lt;chr&gt;, date_egg &lt;date&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>While this is an effective method for us to change individual columns, it can involve a lot of repeated code if we need to perform the same operation across multiple columns. This is where the <code class="sourceCode r"><span class="fu">across</span>()</code> function can help. As the name implies, this function is designed to make it easy for us to apply the same operation to multiple columns. Here’s how we’d use the <code class="sourceCode r"><span class="fu">across</span>()</code> function to convert the contents of the <code>flipper_length_mm</code> and <code>year</code> columns to integers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(flipper_length_mm, year),</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">.fns =</span> as.integer))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 9
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;dbl&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# ℹ 334 more rows
+# ℹ 3 more variables: sex &lt;chr&gt;, date_egg &lt;date&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>The <code>.cols</code> argument is where we provide a vector naming the columns we want to modify. The <code>.fns</code> argument is where we define the function that we want to use to modify each of the columns. Note, when we provide the <code class="sourceCode r">as.intger</code> function to the <code>.fns</code> argument, we don’t include any parentheses.</p>
+<p>Using the <code class="sourceCode r"><span class="fu">across</span>()</code> function saves us the need to write repeated code for each of the columns we want to modify. However, we still need to provide the name of each column we want to modify, which could be a problem we want to work on many columns. Luckily, there are alternative ways we can define these columns. Here we use the <code class="sourceCode r"><span class="fu">where</span>()</code> function to identify all the columns that are currently of character type. This allows us to convert them all to factors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>partially_cleaned_penguin_data <span class="sc">|&gt;</span> </span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.character),</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">.fns =</span> as.factor))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 9
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# ℹ 334 more rows
+# ℹ 3 more variables: sex &lt;fct&gt;, date_egg &lt;date&gt;, year &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>The <code class="sourceCode r"><span class="fu">across</span>()</code> function is quite flexible, allowing us to apply simple or complex functions to multiple columns.</p>
+</section>
+</section>
+</section>
+<section id="review" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Review</h1>
+<p>Combine all the code we used above to convert the raw penguins data frame into the cleaned penguins data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_penguins_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 17
+  studyName `Sample Number` Species          Region Island Stage `Individual ID`
+  &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;          
+1 PAL0708                 1 Adelie Penguin … Anvers Torge… Adul… N1A1           
+2 PAL0708                 2 Adelie Penguin … Anvers Torge… Adul… N1A2           
+3 PAL0708                 3 Adelie Penguin … Anvers Torge… Adul… N2A1           
+4 PAL0708                 4 Adelie Penguin … Anvers Torge… Adul… N2A2           
+5 PAL0708                 5 Adelie Penguin … Anvers Torge… Adul… N3A1           
+6 PAL0708                 6 Adelie Penguin … Anvers Torge… Adul… N3A2           
+# ℹ 10 more variables: `Clutch Completion` &lt;chr&gt;, `Date Egg` &lt;date&gt;,
+#   `Culmen Length (mm)` &lt;dbl&gt;, `Culmen Depth (mm)` &lt;dbl&gt;,
+#   `Flipper Length (mm)` &lt;dbl&gt;, `Body Mass (g)` &lt;dbl&gt;, Sex &lt;chr&gt;,
+#   `Delta 15 N (o/oo)` &lt;dbl&gt;, `Delta 13 C (o/oo)` &lt;dbl&gt;, Comments &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>into the cleaned penguins data frame</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+1 Adelie  Torgersen           39.1          18.7               181        3750
+2 Adelie  Torgersen           39.5          17.4               186        3800
+3 Adelie  Torgersen           40.3          18                 195        3250
+4 Adelie  Torgersen           NA            NA                  NA          NA
+5 Adelie  Torgersen           36.7          19.3               193        3450
+6 Adelie  Torgersen           39.3          20.6               190        3650
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>raw_penguins_data <span class="sc">|&gt;</span> </span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(species, island, culmen_length_mm, culmen_depth_mm, flipper_length_mm,</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>           body_mass_g, sex, date_egg) <span class="sc">|&gt;</span> </span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">bill_length_mm =</span> culmen_length_mm,</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">bill_depth_mm =</span> culmen_depth_mm) <span class="sc">|&gt;</span> </span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">str_to_lower</span>(sex),</span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">species =</span> <span class="fu">str_remove</span>(species, <span class="st">&quot; .+&quot;</span>),</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">year =</span> <span class="fu">year</span>(date_egg),</span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>           <span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(flipper_length_mm, year),</span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">.fns =</span> as.integer),</span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>           <span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.character),</span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">.fns =</span> as.factor)) <span class="sc">|&gt;</span> </span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>date_egg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;dbl&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# ℹ 334 more rows
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="r-session-information" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> R session information</h1>
+<p>Here we report the version number for R and the package versions we used to perform the analyses in this document.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.0 (2024-04-24 ucrt)
 Platform: x86_64-w64-mingw32/x64
@@ -4855,22 +5525,26 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_3.5.1        palmerpenguins_0.1.1
+[1] janitor_2.2.0        tidyr_1.3.1          dplyr_1.1.4         
+[4] stringr_1.5.1        lubridate_1.9.3      readr_2.1.5         
+[7] palmerpenguins_0.1.1
 
 loaded via a namespace (and not attached):
- [1] vctrs_0.6.5       cli_3.6.2         knitr_1.46        rlang_1.1.3      
- [5] xfun_0.43         generics_0.1.3    jsonlite_1.8.8    labeling_0.4.3   
- [9] glue_1.7.0        colorspace_2.1-0  htmltools_0.5.8.1 scales_1.3.0     
-[13] fansi_1.0.6       rmarkdown_2.26    grid_4.4.0        evaluate_0.23    
-[17] munsell_0.5.1     tibble_3.2.1      fastmap_1.1.1     yaml_2.3.8       
-[21] lifecycle_1.0.4   compiler_4.4.0    dplyr_1.1.4       htmlwidgets_1.6.4
-[25] pkgconfig_2.0.3   rstudioapi_0.16.0 farver_2.1.2      digest_0.6.35    
-[29] R6_2.5.1          tidyselect_1.2.1  utf8_1.2.4        pillar_1.9.0     
-[33] magrittr_2.0.3    withr_3.0.0       tools_4.4.0       gtable_0.3.5     </code></pre>
+ [1] bit_4.0.5         jsonlite_1.8.8    compiler_4.4.0    crayon_1.5.2     
+ [5] tidyselect_1.2.1  parallel_4.4.0    snakecase_0.11.1  yaml_2.3.8       
+ [9] fastmap_1.1.1     R6_2.5.1          generics_0.1.3    knitr_1.46       
+[13] htmlwidgets_1.6.4 tibble_3.2.1      pillar_1.9.0      tzdb_0.4.0       
+[17] rlang_1.1.3       utf8_1.2.4        stringi_1.8.4     xfun_0.43        
+[21] bit64_4.0.5       timechange_0.3.0  cli_3.6.2         withr_3.0.0      
+[25] magrittr_2.0.3    digest_0.6.35     vroom_1.6.5       rstudioapi_0.16.0
+[29] hms_1.1.3         lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.23    
+[33] glue_1.7.0        fansi_1.0.6       rmarkdown_2.26    purrr_1.0.2      
+[37] tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
 </div>
 </div>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -43,6 +43,7 @@ be a little different, depending on your web browser.
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-04_Statistical-inference.qmd) (save to `LESSONS/` subdirectory)
 
 * Lesson 5: Working with messy data
+    + [View completed lesson](LESSONS/COMPLETED/Completed_Lesson-05_Working-with-messy-data.qmd)
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-05_Working-with-messy-data.qmd) (save to `LESSONS/` subdirectory)
 
