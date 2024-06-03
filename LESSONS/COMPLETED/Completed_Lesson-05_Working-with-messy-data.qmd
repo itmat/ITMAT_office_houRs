@@ -1,0 +1,425 @@
+---
+title: "Lesson 5: Working with messy data"
+date: 2024-04-16
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+editor: visual
+---
+
+# Prepare the R environment
+
+```{r}
+library(palmerpenguins)
+library(readr)
+library(lubridate)
+library(stringr)
+library(dplyr)
+library(tidyr)
+```
+
+In addition to the *tidyverse* packages we loaded above, we'll also need the *janitor* package. The *janitor* package contains functions to help us "clean" data after we've read it into R. Since we haven't used this package yet, we'll likely need to install it.
+
+```{r}
+#| eval: false
+install.packages("janitor")
+```
+
+::: {.callout-note icon="false"}
+## The 'eval' cell option
+
+If you're looking at the code in the Quarto document for this lesson (instead of the HTML version), you'll notice the `#| eval: false`{.quarto} at the top of the code chunk, or "cell". This tells quarto to skip this code cell (i.e. it will not **eval**uate the code cell). We only want to install the *janitor* package, so we don't need to re-run the code cell whenever we render this quarto document.
+:::
+
+Lastly, we need to load the *janitor* package before we can use its functions.
+
+```{r}
+library(janitor)
+```
+
+# Reading the raw Palmer Penguins Data
+
+We've worked with the Palmer Penguins dataset in several previous lessons. Here is a quick reminder of what this dataset looks like:
+
+```{r}
+#| eval: false
+View(penguins)
+```
+
+This data table and its contents are formatted to work well with R's conventions for visualization and analysis (as we've seen). However, original version of these data, as collected by the authors of the Palmer Penguins study, looked a little different. In this lesson, we will read the raw penguin data into R and work to transform it into the cleaned version we see in the `penguins`{.r} table.
+
+The *palmerpenguins* package includes a csv file of this raw penguins data table. We can use the `path_to_file()`{.r} to find the location of this file on our computers:
+
+```{r}
+palmerpenguins::path_to_file("penguins_raw.csv")
+```
+
+In Lesson 2, we learned about the `read_csv()`{.r} function from the *readr* package. Here we will use this function to read the contents of this raw penguin data table into R. Don't forget to refer to the help docs for `read_csv()`{.r} if you need a refresher on how it works.
+
+```{r}
+raw_penguins_data <- 
+    read_csv(palmerpenguins::path_to_file("penguins_raw.csv"))
+```
+
+Functions from the *readr* package produce a lot of output describing the files they read. Looking through these messages you can find information on the dimensions of this data table, as well as the guesses the `read_csv()`{.r} function made about the contents of each data column. Think about how this information compares to the structure of the cleaned penguins data.
+
+```{r}
+str(penguins)
+```
+
+::: {.callout-note icon="false"}
+## The `str()`{.r} function
+
+`str()`{.r} provides a compact, general overview of the structure of most R data structures. It's useful when you need to quickly familiarize yourself with a data structure.
+:::
+
+Based on any differences you note between the raw and cleaned penguin data, think about the types of changes you'll need to make to the raw data to get it to look like the cleaned data.
+
+# Data cleaning
+
+## Column names
+
+One of the first differences between the raw and cleaned data you may notice is that they have different numbers of columns, with different names. Let's start by using the `colnames()`{.r} function.
+
+```{r}
+colnames(raw_penguins_data)
+colnames(penguins)
+```
+
+Which columns in the raw data appear to correspond to those in the cleaned data? How do the names of the corresponding column different between the two tables?
+
+::: {.callout-warning icon="false"}
+### Column naming contentions in R
+
+In R, column names have the same naming requirements as variables:
+
+-   May only contains letters, numbers, underscores, and period. No spaces.
+-   Cannot start with a number.
+:::
+
+Do any of the column names in the raw data table violate R's naming conventions? What about the names of the columns in the cleaned data table?
+
+Let's examine the raw data table's contents and column names. What do you notice about names of columns that violate R's naming conventions?
+
+```{r paged.print=FALSE}
+head(raw_penguins_data)
+```
+
+We can use backticks to represent column names that violate R's variable naming conventions. This is useful when we're reading data from software that doesn't follow the same conventions (e.g. excel spreadsheets, hand-made CSV files). While backticks give us greater flexibility in name columns, they can be unwieldy.
+
+See what happens if we try to select the `Sample Number` column and forget the backticks.
+
+```{r}
+#| error: true
+raw_penguins_data |> 
+    select(Sample Number)
+```
+
+If there are columns we'll need to refer to frequently in our code, it can make our lives easier to simlify their names and make sure they follow R's naming conventions. In the next two sections, we'll learn about two methods for modify column names.
+
+### The `rename()`{.r} function
+
+The `rename()`{.r} function from the *dplyr* package allows us to rename individual columns using standard tidyverse conventions. In this example code, we rename the `Sample Number` column to remove the space.
+
+```{r}
+raw_penguins_data |> 
+    rename(Sample_Number = `Sample Number`)
+```
+
+From this code cell, you can see the general usage of the `rename()`{.r} function: `rename(input_data, new_column_name = old_column_name)`{.r}. Note that we needed to enclose the original column name inside backticks, because it did not follow R's naming conventions.
+
+We can change the names of multiple columns in the same `rename()`{.r} function by separating each rename operation with a comma. Modify the code below so it also changes the name of the `Culmen Length (mm)` column so it matches R's naming conventions, in addition to renaming the `Sample Number` column:
+
+```{r}
+raw_penguins_data |> 
+    rename(Sample_Number = `Sample Number`,
+           bill_length_mm = `Culmen Length (mm)`)
+```
+
+While we can use the `rename()`{.r} function to change the names of multiple columns in a data frame, this can be laborious if we need to correct many (or most) columns.
+
+### The *janitor* package
+
+As the name implies, the *janitor* package includes several functions that can help us clean our data for use in R. Specifically, we'll be using the `clean_names()`{.r} function. Run the following code cell to see how it affects our raw penguin data table.
+
+```{r paged.print=FALSE}
+raw_penguins_data |> 
+    clean_names()
+```
+
+How have the "cleaned" column names changed? How do they compare to column names in the cleaned penguin data table?
+
+```{r paged.print=FALSE}
+head(penguins)
+```
+
+Use the `clean_names`{.r} function in combination with the `select()`{.r} function collect the columns from the raw data table that contain the same information as the columns in the clean data table. Recall, the `select()`{.r} allows us to grab or discard columns from a data frame by names (refer to the docs for examples).
+
+```{r}
+partially_cleaned_penguin_data <- 
+    raw_penguins_data |> 
+    clean_names() |> 
+    select(species, island, culmen_length_mm, culmen_depth_mm, flipper_length_mm,
+           body_mass_g, sex, date_egg)
+```
+
+Lastly, use the `rename()`{.r} function to change the culmen length/depth column names to "bill" length/depth. This matches the column names in the cleaned data.
+
+```{r}
+partially_cleaned_penguin_data <- 
+    partially_cleaned_penguin_data |> 
+    rename(bill_length_mm = culmen_length_mm,
+           bill_depth_mm = culmen_depth_mm)
+```
+
+## Column contents
+
+While our partially cleaned data frame has a similar column structure compared to the full cleaned data frame, the contents of the columns are still different.
+
+```{r}
+head(partially_cleaned_penguin_data)
+```
+
+```{r}
+head(penguins)
+```
+
+What is differences do you notice between the contents of these two data tables? Pay special attention to the variable types in each column.
+
+Recall from previous lessons we can use the `mutate()`{.r} function from the *dplyr* function to create new columns or modify the contents of existing columns. In the following sections we'll learn about several packages and functions we can use in combination with `mutate()`{.r} to finish cleaning the penguin data.
+
+### The *stringr* package
+
+Pay special attention to the contents of the `species` and `sex` columns. The `species` column in the partially cleaned data is quite a bit longer than the column in the full cleaned data. Specifically, it contains the word "Penguin", as well the as the full genus and species name for each penguin. While the `sex` column contains the same information in the partially and fully cleaned data, the values in the partially cleaned data are all uppercase while those in the fully cleaned data are all lowercase.
+
+Since the data in these two columns are character strings, we can use the *stringr* package. This package contains several functions designed to easily modify and manipulate character strings. For details on all functions in the *stringr* package, refer to the documentation or the Posit [cheatsheet](https://rstudio.github.io/cheatsheets/html/strings.html).
+
+Let's start by fixing the case discrepancy in the `sex` column. The `str_to_lower()`{.r} function from the *stringr* package takes a character string and converts all the letters in the string to lowercase.
+
+```{r}
+str_to_lower(c("FEMALE", "Female", "FeMaLe", "F3MALE", "Female!"))
+```
+
+Here we'll use the `str_to_lower()`{.r} function inside the `mutate()`{.r} function to change the contents of the `sex` column to lowercase.
+
+```{r}
+partially_cleaned_penguin_data <- 
+    partially_cleaned_penguin_data |> 
+    mutate(sex = str_to_lower(sex))
+```
+
+Now let's consider the contents of the species column. The fully cleaned penguin data contains just the common species name (Adelie, Chinstrap, Gentoo), while the partially cleaned data contains the common species name, the word "Penguin", and the full genus and species names. Let's examine all the unique values in the species column
+
+```{r}
+partially_cleaned_penguin_data |> 
+    distinct(species)
+```
+
+```{r}
+penguins |> 
+    distinct(species)
+```
+
+Why might it be preferable to use just the common name? Think about what it would be like to use the species column to filter the data just for Gentoo penguins, or what figure legends would look like if different traces were colored by species.
+
+Here we'll use the `str_remove()`{.r} function to remove the portion of the strings in the species column that we don't want.
+
+```{r}
+str_remove(string = "Adelie Penguin (Pygoscelis adeliae)",
+           pattern = " Penguin.+")
+```
+
+The `pattern` argument in this function defines the portion of the string that we want to remove. This pattern is defined using what is called a "regular expression".
+
+::: {.callout-note icon="false"}
+#### Regular expressions
+
+Regular expressions are a special kind of grammar that lets us loosely define a pattern in a character string that we're looking for. While we're not going to delve too deeply into writing regular expressions, here are some examples to help give you some intuition for how they work.
+
+In their simplest forms, these patterns match portions of a string exactly.
+
+```{r}
+str_remove("Adelie Penguinssssss",
+           pattern = "Penguin")
+```
+
+```{r}
+str_remove("Adelie Penguinssssss",
+           pattern = " ")
+```
+
+There are special character combinations we can use in a regular expression to make a pattern more open-ended. For example, the period (".") will match any single character.
+
+```{r}
+str_remove("Adelie Penguinssssss",
+           pattern = ".")
+```
+
+Multiple periods will match multiple characters.
+
+```{r}
+str_remove("Adelie Penguinssssss",
+           pattern = "...")
+```
+
+Lastly, we can use the plus sign ("+") in combination with another character to match repeated occurrences of that character.
+
+```{r}
+str_remove("Adelie Penguinssssss",
+           pattern = "s+")
+```
+
+If we combine the period and plus signs, we match multiple occurrences of any combination of characters (i.e. it matches everything).
+
+```{r}
+str_remove("Adelie Penguinssssss",
+           pattern = ".+")
+```
+:::
+
+Let's review the regular expression we used above to remove everything from the species, except for the common name.
+
+```{r}
+str_remove(string = "Adelie Penguin (Pygoscelis adeliae)",
+           pattern = " Penguin.+")
+```
+
+The pattern starts with " Penguin", so it will match any portion of a string where a space is followed by the word "Penguin". The ".+" matches any combination of characters of any length. So taken together, this pattern matches a space, followed by the word "Penguin", followed by any combination of characters of any length.
+
+Let's use the `str_remove()`{.r} function with the `mutate()`{.r} function to reduce the contents of the `species` column to just the common species name.
+
+```{r}
+partially_cleaned_penguin_data |> 
+    mutate(species = str_remove(string = species,
+                                pattern = " Penguin.+")) |> 
+    distinct(species)
+```
+
+Why weren't all of the species entries trimmed? How could we modify the regular expression to match them all?
+
+```{r}
+partially_cleaned_penguin_data |> 
+    mutate(species = str_remove(string = species,
+                                pattern = " .+")
+           ) |> 
+    distinct(species)
+```
+
+Now save the updated contents of the species column.
+
+```{r}
+partially_cleaned_penguin_data <- 
+    partially_cleaned_penguin_data |> 
+    mutate(species = str_remove(string = species,
+                                pattern = " .+"))
+```
+
+### The *lubridate* package
+
+The partially cleaned data contains a `date_egg` column with the full calendar date on which the researhcers first observed one egg in each study nest. The cleaned penguin data contains a `year` column that only contains the year. While we could use *stringr* functions to try to extract the year component from each entry, we have a better option since this column is of date type.
+
+The *lubridate* package contains a series of functions designed to make date/time objects easier to manage and manipulate. You can refer to the full *lubridate* documentation or the [cheatsheet](https://rstudio.github.io/cheatsheets/html/lubridate.html) provided by Posit for details on the various functions in this package.
+
+Here, we will use the `year()`{.r} function to extract just the year portion of a date object. Here's an example:
+
+```{r}
+ymd("2007-11-11")
+```
+
+```{r}
+year(ymd("2007-11-11"))
+```
+
+Now use the `year()`{.r} function in combination with the `mutate()`{.r} function to create a new `year` column with just the year information from each study nest.
+
+```{r}
+partially_cleaned_penguin_data <- 
+    partially_cleaned_penguin_data |> 
+    mutate(year = year(date_egg))
+```
+
+### The `across()`{.r} function
+
+We are very close to producing a fully cleaned version of the penguin dataset. Comparing the displays of these two data tables, can you identify the remaining differences between them?
+
+```{r}
+head(partially_cleaned_penguin_data)
+```
+
+```{r}
+head(penguins)
+```
+
+The `species`, `island`, and `sex` columns in the fully cleaned data are factors, while in the partially cleaned data they are character strings. Similarly, the `flipper_length_mm` and `year` columns in the fully cleaned data are integers, while in the partially cleaned data they are doubles.
+
+We can use the `mutate()`{.r} function in combination with the `as.factor()`{.r} and `as.integer()`{.r} functions to correct these remaining differences.
+
+Use these functions to convert the contents of the `species` and `year` columns to factors and integers, respectively.
+
+```{r}
+partially_cleaned_penguin_data |> 
+    mutate(species = as.factor(species),
+           year = as.integer(year))
+```
+
+While this is an effective method for us to change individual columns, it can involve a lot of repeated code if we need to perform the same operation across multiple columns. This is where the `across()`{.r} function can help. As the name implies, this function is designed to make it easy for us to apply the same operation to multiple columns. Here's how we'd use the `across()`{.r} function to convert the contents of the `flipper_length_mm` and `year` columns to integers.
+
+```{r}
+partially_cleaned_penguin_data |> 
+    mutate(across(.cols = c(flipper_length_mm, year),
+                  .fns = as.integer))
+```
+
+The `.cols` argument is where we provide a vector naming the columns we want to modify. The `.fns` argument is where we define the function that we want to use to modify each of the columns. Note, when we provide the `as.intger`{.r} function to the `.fns` argument, we don't include any parentheses.
+
+Using the `across()`{.r} function saves us the need to write repeated code for each of the columns we want to modify. However, we still need to provide the name of each column we want to modify, which could be a problem we want to work on many columns. Luckily, there are alternative ways we can define these columns. Here we use the `where()`{.r} function to identify all the columns that are currently of character type. This allows us to convert them all to factors.
+
+```{r}
+partially_cleaned_penguin_data |> 
+    mutate(across(.cols = where(is.character),
+                  .fns = as.factor))
+```
+
+The `across()`{.r} function is quite flexible, allowing us to apply simple or complex functions to multiple columns.
+
+# Review
+
+Combine all the code we used above to convert the raw penguins data frame into the cleaned penguins data frame.
+
+```{r}
+head(raw_penguins_data)
+```
+
+into the cleaned penguins data frame
+
+```{r}
+head(penguins)
+```
+
+```{r}
+raw_penguins_data |> 
+    clean_names() |> 
+    select(species, island, culmen_length_mm, culmen_depth_mm, flipper_length_mm,
+           body_mass_g, sex, date_egg) |> 
+    rename(bill_length_mm = culmen_length_mm,
+           bill_depth_mm = culmen_depth_mm) |> 
+    mutate(sex = str_to_lower(sex),
+           species = str_remove(species, " .+"),
+           year = year(date_egg),
+           across(.cols = c(flipper_length_mm, year),
+                  .fns = as.integer),
+           across(.cols = where(is.character),
+                  .fns = as.factor)) |> 
+    select(-date_egg)
+```
+
+# R session information
+
+Here we report the version number for R and the package versions we used to perform the analyses in this document.
+
+```{r}
+sessionInfo()
+```
