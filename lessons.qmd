@@ -47,6 +47,14 @@ be a little different, depending on your web browser.
     + Downloads:
         - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-05_Working-with-messy-data.qmd) (save to `LESSONS/` subdirectory)
 
+* Lesson 6: Joining tables
+    + Downloads:
+        - [Quarto doc](https://raw.githubusercontent.com/itmat/ITMAT_office_houRs/main/LESSONS/Lesson-06_Joining-tables.qmd) (save to `LESSONS/` subdirectory)
+        - Data files:  (save to `DATA/` subdirectory)
+            1. [Clock gene expression table](DATA/bhtc_rnaseq_gene-expression_core-clock-genes_long-format.txt)
+            2. [Sample metadata](DATA/bhtc_rnaseq_sample-metadata.txt)
+            3. [Gene annotation metadata](DATA/bhtc_rnaseq_gene-metadata_gencode-v23.txt)
+
 
 # Notes & Nibbles
 
