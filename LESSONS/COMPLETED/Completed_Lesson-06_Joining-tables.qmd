@@ -1,0 +1,208 @@
+---
+title: "Lesson 6: Joining tables"
+date: 2024-06-04
+format:
+    html:
+        standalone: true
+        embed-resources: true
+        number-sections: true
+        toc: true
+editor: visual
+---
+
+# Prepare the R environment
+
+```{r}
+#| output: false
+library(here)
+library(readr)
+library(dplyr)
+library(tidyr)
+```
+
+If you're looking at the quarto doc for this listen, you might notice we're using the `#| output: false` option for this code chunk. This hides all of the output of the code in this chunk when we render this quarto document into an HTML file. The *here* library lists the full path to the current project directory on your local computer. While this is useful to see when you're running the code, we may not want to include this in the final rendered HTML report (particularly if we're publishing it on the internet).
+
+# Load RNA-seq data from the circadian gene expression atlas
+
+For this lesson we'll be working with gene expression data from an atlas of circadian transcription in the mouse. We'll be focusing specifically on core clock gene expression across the liver, kidney, and skeletal muscle.
+
+We prepared these data files using the *recount3* package. The recount project, and its associated R package, provide pre-processed expression data from over 10,000 mouse datasets. We will eventually add the code we used to prepare these files to the ITMAT office houRs website (look in "Notes & Nibbles" section on the Lessons page).
+
+We'll start by using functions from the *readr* package to load these tsv files into R.
+
+```{r}
+clock_gene_expression <- 
+    read_tsv(here("DATA/bhtc_rnaseq_gene-expression_core-clock-genes_long-format.txt"))
+```
+
+```{r}
+sample_metadata <- 
+    read_tsv(here("DATA/bhtc_rnaseq_sample-metadata.txt"))
+```
+
+```{r}
+gene_metadata <- 
+    read_tsv(here("DATA/bhtc_rnaseq_gene-metadata_gencode-v23.txt"))
+```
+
+Now that we've loaded the data from these files, examine their contents. Compare what information each data table contains. Is there any information shared across data tables?
+
+```{r}
+clock_gene_expression
+```
+
+```{r}
+sample_metadata
+```
+
+```{r}
+gene_metadata
+```
+
+# Join data from different tables
+
+We have one table that contains the read counts for every core clock gene, across several tissues.
+
+```{r}
+head(clock_gene_expression)
+```
+
+This is not particularly useful. If we wanted to look at *Bmal1* expression in muscle tissue, how would we identify those samples?
+
+We could use information from the other tables, in combinations with the `filter()`{.r} function to access our samples of interest.
+
+```{r}
+gene_metadata |> 
+    filter(gene_name == "Arntl")
+
+clock_gene_expression |> 
+    filter(gene_id == "ENSMUSG00000055116.8")
+```
+
+While this gives us the samples we want, we're still missing a lot of the rich information contained in those other data tables (e.g. timepoints, gene name). This is where the `join_*`{.r} family of functions comes in.
+
+Use the `left_join()`{.r} command to combine information from the gene expression and gene metadata tables.
+
+```{r}
+clock_gene_expression |> 
+    left_join(gene_metadata)
+```
+
+The `left_join()`{.r} function identified the 'gene_id' column as common between the two tables (called the "key"). It then used the values in the 'gene_id' columns to line up the rows in each column before joining them into a single table. We can tell this from the status message the `left_join()`{.r} function prints.
+
+Take note of the number of rows in the two input tables, compared to the table created by the `left_join()`{.r} function.
+
+```{r}
+paste("Clock gene table:", dim(clock_gene_expression)[1], "rows")
+paste("Gene metadata table:", dim(gene_metadata)[1], "rows")
+paste("Left join result table:", dim(left_join(clock_gene_expression, gene_metadata, ))[1], "rows")
+```
+
+## Different types of join
+
+Let's examine the help documentation for the `left_join()`{.r} function.
+
+```{r}
+#| eval: false
+help("left_join")
+```
+
+Note that the first argument (*x*) is considered the "left table", and the second argument (*y*) is considered the "right table". In a `left_join()`{.r}, we start with *x* as the main table and then add columns from all of the matching rows in *y*.
+
+For comparison, let's see what happens if we use the `right_join()`{.r} function (pay attention to the number of rows in the result).
+
+```{r}
+clock_gene_expression |> 
+    right_join(gene_metadata)
+```
+
+In this case, the `right_join()`{.r} function is adding all of the columns in *x* ("left table") that match rows in *y* ("right table"), and joining them to the *y* table. This keeps all of the rows in *y*.
+
+Though we're not going to examine them here, there are other types of "mutating joins" (i.e. joins adding new columns to an existing table) offered by the *dplyr* package. The section on joins from Hadley Wickham's *R for Data Science* book has a [helpful figure](https://r4ds.hadley.nz/joins.html#fig-join-venn) summarizing the different types of joins.
+
+![](https://r4ds.hadley.nz/diagrams/join/venn.png)
+
+## Controlling the join
+
+Now let's join the sample metadata table to the gene expression table.
+
+```{r}
+clock_gene_expression |> 
+    left_join(sample_metadata)
+```
+
+What do you think happened during the join? Hint: take a look at the contents of the two input tables, paying close attention to the column from each table that the `left_join()`{.r} function chose as the key.
+
+Looking at the two input tables, can we find a different set of columns to use as the key to join the tables? We can use the 'by' argument from any join function, in combination with the `join_by()`{.r} function, to control which columns from each table serve as the keys.
+
+```{r}
+clock_gene_expression |> 
+    left_join(sample_metadata,
+              by = join_by(Sample_id == SRA_id))
+```
+
+Note, you may see code that uses the 'by' argument without the `join_by()`{.r} function.
+
+```{r}
+clock_gene_expression |> 
+    left_join(sample_metadata,
+              by = c("Sample_id" = "SRA_id"))
+```
+
+This is the older way of defining keys, before the introduction of the `join_by()`{.r} function. While this older convention is still supported by *dplyr*, the `join_by()`{.r} function offers more flexibility when defining key relationships between tables.
+
+## Combining joins
+
+In closing, let's combine what we learned above to create a table that combines expression data with helpful gene metadata (like gene names) and sample metadata (like tissues and timepoint).
+
+We'll construct this table in stages. Let's start by joining the gene expression table with the gene metadata table. Note, when we specify a table in the `join_by()`{.r} function, we can include additional tidyverse operations to modify either table we're joining.
+
+```{r}
+clock_gene_expression |> 
+    left_join(
+        gene_metadata |> 
+            select(gene_id, gene_name),
+        by = join_by(gene_id)
+    )
+```
+
+In this case, we reduced the gene metadata table just two columns: 'gene_id' (the key for joining to the gene expression table) and 'gene_name' (the information we want to add to the gene expression table).
+
+Now let's use another join to add the sample metadata. Again, we'll use some additional operations to modify the sample metadata prior to the join.
+
+```{r}
+clock_gene_expression |> 
+    left_join(
+        gene_metadata |> 
+            select(gene_id, gene_name),
+        by = join_by(gene_id)
+    ) |> 
+    left_join(
+        sample_metadata |> 
+            select(SRA_id, Sample_id, Tissue, Timepoint) |> 
+            rename(Sample_name = Sample_id),
+        join_by(Sample_id == SRA_id)
+    )
+```
+
+Now we have table that would be useful for generating plots or including with a publication.
+
+For quick reference, the *dplyr* cheatsheet contains a section summarizing the different join functions. Again, Hadley Wickham's *R for Data Science* also has an excellent [section on the join operations](https://r4ds.hadley.nz/joins.html) that dives more deeply into the various types of joins.
+
+# A primer on databases
+
+The three files we used above are an example of a simple database. We stored the data across multiple tables, which we can connect to each other using "keys" (i.e. columns with unique identifiers shared between tables). This general style of constructing a database is called the "relational database model".
+
+Inside R, we can use a series of functions/operations (e.g. `join()`{.r}, `select()`{.r}, `filter()`{.r}) to extract different subsets of the data across the different tables. In a database system, we use analogous operations to create a "query" that extracts the data we want.
+
+*All of Us* stores data using a relational model, so it's useful for us to be familiar with these operations. We'll need to use joins and filters to when working with *All of Us* data spread across multiple tables.
+
+The *All of Us* [data dictionary](https://support.researchallofus.org/hc/en-us/articles/360033200232-Data-Dictionaries-for-the-Curated-Data-Repositories-CDRs) lists the tables and columns in the database. This will serve as a guide when we construct queries to extract our datasets of interest and plan our analyses.
+
+# R session information
+
+Here we report the version number for R and the package versions we used to perform the analyses in this document.
+
+```{r}
+sessionInfo()
+```

@@ -149,7 +149,7 @@ the *y* table. This keeps all of the rows in *y*.
 Though we're not going to examine them here, there are other types of "mutating
 joins" (i.e. joins adding new columns to an existing table) offered by the
 *dplyr* package. The section on joins from Hadley Wickham's *R for Data Science*
-book as a [helpful figure](https://r4ds.hadley.nz/joins.html#fig-join-venn)
+book has a [helpful figure](https://r4ds.hadley.nz/joins.html#fig-join-venn)
 summarizing the different types of joins.
 
 ![](https://r4ds.hadley.nz/diagrams/join/venn.png)
