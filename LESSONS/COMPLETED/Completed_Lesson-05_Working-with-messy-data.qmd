@@ -54,6 +54,7 @@ This data table and its contents are formatted to work well with R's conventions
 The *palmerpenguins* package includes a csv file of this raw penguins data table. We can use the `path_to_file()`{.r} to find the location of this file on our computers:
 
 ```{r}
+#| output: false
 palmerpenguins::path_to_file("penguins_raw.csv")
 ```
 
